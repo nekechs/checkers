@@ -1,11 +1,21 @@
 package com.nekechs.shpee.checkers.core;
 
-public class BoardVector {
-    /**
-     * TODO: Implement board attributes tester - and have a delegation where each vector maintains a
-     * copy of the Board that it is relevant to.
-     */
-
+public abstract class BoardVector {
     int row;
     int col;
+
+    public BoardVector(int row, int col) {
+        this.row = row;
+        this.col = col;
+    }
+
+    public int getRow() {
+        return row;
+    }
+
+    public int getCol() {
+        return col;
+    }
+//    public abstract int getMaxRow();
+//    public abstract int getMaxCol();
 }

@@ -1,0 +1,65 @@
+package com.nekechs.shpee.checkers.core;
+
+public class PositionVector extends BoardVector {
+    // The number of rows and columns that are present
+    private int maxRow;
+    private int maxCol;
+
+    public PositionVector() {
+        super(7,7);
+    }
+
+    public PositionVector(int row, int col) {
+        super(0,0);
+        super.row = row % getMaxRow();
+        super.col = col % getMaxCol();
+    }
+
+    public PositionVector addVector(BoardVector vector) {
+        int newRow = super.row + vector.row;
+        int newCol = super.col + vector.col;
+
+        PositionVector newVector = new PositionVector(newRow, newCol);
+
+        return newVector;
+    }
+
+    public PositionVector subtractVector(BoardVector vector) {
+        int newRow = super.row - vector.row;
+        int newCol = super.col - vector.col;
+
+        PositionVector newVector = new PositionVector(newRow, newCol);
+
+        return newVector;
+    }
+
+    /**
+     * Gets the number of rows.
+     * @return Number guaranteed to be at least 1.
+     */
+    public int getMaxRow() {
+        return maxRow;
+    }
+
+    /**
+     * Gets the number of columns.
+     * @return Number guaranteed to be at least 1.
+     */
+    public int getMaxCol() {
+        return maxCol;
+    }
+
+    /**
+     * Checks whether or not the vector is within the bounds of the checkers board, as defined by
+     * maxRow and maxCol.
+     *
+     * @return boolean that specifies whether or not the position vector is within the bounds of the
+     * vector.
+     */
+    public boolean checkInBounds() {
+        return super.row < getMaxRow() &&
+                super.row >= 0 &&
+                super.col < getMaxCol() &&
+                super.col >= 0;
+    }
+}
