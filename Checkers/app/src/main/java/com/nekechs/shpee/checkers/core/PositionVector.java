@@ -2,8 +2,8 @@ package com.nekechs.shpee.checkers.core;
 
 public class PositionVector extends BoardVector {
     // The number of rows and columns that are present
-    private int maxRow;
-    private int maxCol;
+    private int maxRow = 8;
+    private int maxCol = 8;
 
     public PositionVector() {
         super(7,7);

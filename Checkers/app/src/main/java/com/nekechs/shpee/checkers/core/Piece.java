@@ -43,6 +43,6 @@ public abstract class Piece {
     }
 
     public String toString() {
-        return team.getTeamColor() + Character.toString(getPieceType());
+        return Character.toString(team.getTeamColor()) + Character.toString(getPieceType());
     }
 }

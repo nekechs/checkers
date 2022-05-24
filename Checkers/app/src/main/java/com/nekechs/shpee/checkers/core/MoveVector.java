@@ -9,7 +9,16 @@ public class MoveVector extends BoardVector{
         SOUTH,
         SOUTHWEST,
         WEST,
-        NORTHWEST
+        NORTHWEST,
+        // Currently, all Knight moves (N0 - N7) ARE NOT IMPLEMENTED.
+        N0,
+        N1,
+        N2,
+        N3,
+        N4,
+        N5,
+        N6,
+        N7
     }
 
     /**
@@ -63,7 +72,10 @@ public class MoveVector extends BoardVector{
                 super.row = -1;
                 super.col = 1;
                 break;
+            default:
+                super.row = 0;
+                super.col = 0;
+                break;
         }
     }
-
 }
