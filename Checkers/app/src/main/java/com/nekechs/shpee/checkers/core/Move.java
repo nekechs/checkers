@@ -6,12 +6,10 @@ import java.util.LinkedList;
 public class Move {
     // This is the sequence of moves that is propsosed
     List<MoveVector> moveSequence;
+    PositionVector startingPiece;
 
-    public Move() {
-        moveSequence = new LinkedList<>();
-    }
-
-    public Move(List<MoveVector> moveSequence) {
+    public Move(PositionVector startingPiece, List<MoveVector> moveSequence) {
+        this.startingPiece = startingPiece;
         this.moveSequence = moveSequence;
     }
 }

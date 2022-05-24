@@ -9,6 +9,11 @@ public abstract class BoardVector {
         this.col = col;
     }
 
+    BoardVector(BoardVector v) {
+        this.row = v.row;
+        this.col = v.col;
+    }
+
     public int getRow() {
         return row;
     }

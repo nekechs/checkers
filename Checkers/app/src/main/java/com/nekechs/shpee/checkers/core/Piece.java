@@ -22,6 +22,12 @@ public abstract class Piece {
         parentBoard = null;
     }
 
+    Piece(Piece p) {
+        this.team = p.team;
+        this.position = new PositionVector(p.position);
+        parentBoard =
+    }
+
     //TODO: Figure out move logic based on how checkers works
     public abstract void move(Move move);
     public abstract char getPieceType();

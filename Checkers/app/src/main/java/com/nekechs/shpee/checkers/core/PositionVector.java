@@ -15,6 +15,10 @@ public class PositionVector extends BoardVector {
         super.col = col % getMaxCol();
     }
 
+    PositionVector(BoardVector v) {
+        super(v);
+    }
+
     public PositionVector addVector(BoardVector vector) {
         int newRow = super.row + vector.row;
         int newCol = super.col + vector.col;

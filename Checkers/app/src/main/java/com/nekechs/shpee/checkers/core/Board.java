@@ -43,6 +43,13 @@ public abstract class Board {
         }
     }
 
+    public Optional<Piece> getPieceAtPosition(PositionVector position) {
+        int rowVal = position.getRow();
+        int colVal = position.getCol();
+
+        return pieceGrid.get(rowVal).get(colVal);
+    }
+
     /**
      * Gets the maximum number of rows for this board.
      * @return integer guaranteed to be at least 1

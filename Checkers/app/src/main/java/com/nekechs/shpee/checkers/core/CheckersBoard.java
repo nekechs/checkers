@@ -62,6 +62,21 @@ public class CheckersBoard extends Board{
             e.printStackTrace();
         }
     }
+
+    private CheckersBoard(CheckersBoard board) {
+        super(8,8);
+        white = new Team(this, 'w', WHITE_RIGHT_CORNER);
+        black = new Team(this, 'b', BLACK_RIGHT_CORNER);
+
+        List<Piece> pieceList = new ArrayList<>();
+
+        try{
+            addPiecesToBoard(pieceList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public int getBoardMaxCol() {
         return super.maxCol;
