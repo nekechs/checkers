@@ -1,5 +1,8 @@
 package com.nekechs.shpee.checkers.core;
 
+import com.nekechs.shpee.checkers.core.vectors.PositionVector;
+import com.nekechs.shpee.checkers.core.vectors.VectorFactory;
+
 import java.util.List;
 
 public abstract class Piece {
@@ -24,7 +27,7 @@ public abstract class Piece {
     //TODO: Figure out move logic based on how checkers works
     public abstract void move(CaptureMove move);
 
-    public abstract List<MoveVector.Direction> getPathDirections();
+    public abstract List<VectorFactory.Direction> getPathDirections();
     public abstract char getPieceType();
 
     public PositionVector getPosition() {
@@ -32,11 +35,11 @@ public abstract class Piece {
     }
 
     public int getRow() {
-        return position.row;
+        return position.getRow();
     }
 
     public int getCol() {
-        return position.col;
+        return position.getCol();
     }
 
     public String toString() {

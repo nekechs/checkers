@@ -1,10 +1,10 @@
 package com.nekechs.shpee.checkers.core;
 
 import com.nekechs.shpee.checkers.core.exceptions.OutOfBoardException;
+import com.nekechs.shpee.checkers.core.vectors.PositionVector;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class Board {
     final Piece[][] grid = new Piece[8][8];

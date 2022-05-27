@@ -1,6 +1,8 @@
 package com.nekechs.shpee.checkers.core;
 
-public interface Move {
-    PositionVector getStartingSpot();
-    boolean isPlausible();
+import com.nekechs.shpee.checkers.core.vectors.PositionVector;
+
+public abstract class Move {
+    abstract PositionVector getStartingSpot();
+    abstract boolean isPlausible();
 }

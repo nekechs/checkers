@@ -1,6 +1,10 @@
 
 package com.nekechs.shpee.checkers.core;
 
+import com.nekechs.shpee.checkers.core.vectors.Movement;
+import com.nekechs.shpee.checkers.core.vectors.PositionVector;
+import com.nekechs.shpee.checkers.core.vectors.VectorFactory;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -13,7 +17,7 @@ import java.util.ArrayList;
 public class Team {
     final char teamColor;
     final PositionVector teamOrigin;
-    final MoveVector.Direction movementDirection;
+    final VectorFactory.Direction movementDirection;
 
     final List<Piece> pieceList;
 
@@ -47,21 +51,21 @@ public class Team {
         return teamOrigin;
     }
 
-    protected static MoveVector.Direction getDirection(PositionVector teamOrigin) {
-        int rowVal = teamOrigin.row;
-        int colVal = teamOrigin.col;
+    protected static VectorFactory.Direction getDirection(PositionVector teamOrigin) {
+        int rowVal = teamOrigin.getRow();
+        int colVal = teamOrigin.getCol();
 
         if(rowVal < 4) {
             if(colVal < 4) {
-                return MoveVector.Direction.SOUTH;
+                return VectorFactory.Direction.SOUTH;
             } else {
-                return MoveVector.Direction.WEST;
+                return VectorFactory.Direction.WEST;
             }
         } else {
             if(colVal < 4) {
-                return MoveVector.Direction.EAST;
+                return VectorFactory.Direction.EAST;
             } else {
-                return MoveVector.Direction.NORTH;
+                return VectorFactory.Direction.NORTH;
             }
         }
     }

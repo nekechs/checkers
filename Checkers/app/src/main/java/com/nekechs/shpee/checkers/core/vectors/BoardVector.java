@@ -1,8 +1,8 @@
-package com.nekechs.shpee.checkers.core;
+package com.nekechs.shpee.checkers.core.vectors;
 
 public abstract class BoardVector {
-    int row;
-    int col;
+    final int row;
+    final int col;
 
     public BoardVector(int row, int col) {
         this.row = row;

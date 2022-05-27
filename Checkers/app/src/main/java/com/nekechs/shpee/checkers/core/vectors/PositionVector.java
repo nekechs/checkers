@@ -1,27 +1,27 @@
-package com.nekechs.shpee.checkers.core;
+package com.nekechs.shpee.checkers.core.vectors;
+
+import com.nekechs.shpee.checkers.core.Move;
 
 import java.util.Optional;
 
 public class PositionVector extends BoardVector {
     // The number of rows and columns that are present
-    private int maxRow = 8;
-    private int maxCol = 8;
+    private static final int maxRow = 8;
+    private static final int maxCol = 8;
 
     public PositionVector() {
         super(7,7);
     }
 
     public PositionVector(int row, int col) {
-        super(0,0);
-        super.row = row % getMaxRow();
-        super.col = col % getMaxCol();
+        super(row % maxRow,col % maxCol);
     }
 
     PositionVector(BoardVector v) {
         super(v);
     }
 
-    public PositionVector addVector(BoardVector vector) {
+    public PositionVector addVector(RelativeVector vector) {
         int newRow = super.row + vector.row;
         int newCol = super.col + vector.col;
 
@@ -30,16 +30,16 @@ public class PositionVector extends BoardVector {
         return newVector;
     }
 
-    public PositionVector subtractVector(BoardVector vector) {
+    public RelativeVector minusVector(RelativeVector vector) {
         int newRow = super.row - vector.row;
         int newCol = super.col - vector.col;
 
-        PositionVector newVector = new PositionVector(newRow, newCol);
+        RelativeVector newVector = new RelativeVector(newRow, newCol);
 
         return newVector;
     }
 
-    public Optional<MoveVector> getDiagonalVectorFromSubtract(BoardVector vector) {
+    public Optional<Movement> getDiagonalVectorFromSubtract(BoardVector vector) {
         int newRow = super.row - vector.row;
         int newCol = super.col - vector.col;
 
@@ -47,14 +47,11 @@ public class PositionVector extends BoardVector {
             return Optional.empty();
         }
 
-        MoveVector relativeVector;
+        Optional<Movement> relativeVector;
 
-        relativeVector = MoveVector.getClosestDiagnonalVector(newRow, newCol);
+        relativeVector = Movement.getClosestDiagnonalVector(newRow, newCol);
 
-        if(relativeVector.magnitude == 0) {
-            return Optional.empty();
-        }
-        return Optional.of(relativeVector);
+        return relativeVector;
     }
 
     /**

@@ -1,10 +1,15 @@
-package com.nekechs.shpee.checkers.core;
-
-public class NormalMove implements Move{
-    PositionVector startingSpot;
-    MoveVector.Direction moveDirection
-    public NormalMove(PositionVector startingSpot, MoveVector.Direction moveDirection) {
-        this.startingSpot = startingSpot;
-        this.moveDirection = moveDirection;
-    }
-}
+//package com.nekechs.shpee.checkers.core;
+//
+//import com.nekechs.shpee.checkers.core.vectors.Movement;
+//import com.nekechs.shpee.checkers.core.vectors.PositionVector;
+//import com.nekechs.shpee.checkers.core.vectors.VectorFactory;
+//
+//public class NormalMove extends Move{
+//    PositionVector startingSpot;
+//    VectorFactory.Direction moveDirection;
+//
+//    public NormalMove(PositionVector startingSpot, VectorFactory.Direction moveDirection) {
+//        this.startingSpot = startingSpot;
+//        this.moveDirection = moveDirection;
+//    }
+//}

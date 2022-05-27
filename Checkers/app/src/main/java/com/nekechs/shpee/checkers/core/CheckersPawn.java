@@ -1,5 +1,9 @@
 package com.nekechs.shpee.checkers.core;
 
+import com.nekechs.shpee.checkers.core.vectors.Movement;
+import com.nekechs.shpee.checkers.core.vectors.PositionVector;
+import com.nekechs.shpee.checkers.core.vectors.VectorFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,16 +19,16 @@ public class CheckersPawn extends Piece{
     }
 
     @Override
-    public List<MoveVector.Direction> getPathDirections() {
-        if(super.team.movementDirection == MoveVector.Direction.NORTH) {
-            return List.of(MoveVector.Direction.NORTHEAST, MoveVector.Direction.NORTHWEST);
+    public List<VectorFactory.Direction> getPathDirections() {
+        if(super.team.movementDirection == VectorFactory.Direction.NORTH) {
+            return List.of(VectorFactory.Direction.NORTHEAST, VectorFactory.Direction.NORTHWEST);
         }
 
         switch(super.team.movementDirection) {
             case NORTH:
-                return List.of(MoveVector.Direction.NORTHEAST, MoveVector.Direction.NORTHWEST);
+                return List.of(VectorFactory.Direction.NORTHEAST, VectorFactory.Direction.NORTHWEST);
             case SOUTH:
-                return List.of(MoveVector.Direction.SOUTHEAST, MoveVector.Direction.SOUTHWEST);
+                return List.of(VectorFactory.Direction.SOUTHEAST, VectorFactory.Direction.SOUTHWEST);
             default:
                 return new ArrayList<>();
         }

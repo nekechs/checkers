@@ -1,12 +1,16 @@
 package com.nekechs.shpee.checkers.core;
 
+import com.nekechs.shpee.checkers.core.vectors.Movement;
+import com.nekechs.shpee.checkers.core.vectors.PositionVector;
+import com.nekechs.shpee.checkers.core.vectors.VectorFactory;
+
 import java.util.List;
 
-public class CaptureMove implements Move {
-    List<MoveVector.Direction> movementSequence;
+public class CaptureMove extends Move {
+    List<VectorFactory.Direction> movementSequence;
     PositionVector startingPiece;
 
-    public CaptureMove(PositionVector startingPiece, List<MoveVector.Direction> movementSequence) {
+    public CaptureMove(PositionVector startingPiece, List<VectorFactory.Direction> movementSequence) {
         this.startingPiece = startingPiece;
         this.movementSequence = movementSequence;
     }
@@ -23,10 +27,10 @@ public class CaptureMove implements Move {
      * @return boolean that represents if the move is plausible on the checkers board.
      */
     public boolean isPlausible() {
-        MoveVector currentMovement;
+        Movement currentMovement;
         PositionVector lastPositionSpot;
 
-        for(MoveVector.Direction directions : movementSequence) {
+        for(VectorFactory.Direction directions : movementSequence) {
 
         }
         return true;
