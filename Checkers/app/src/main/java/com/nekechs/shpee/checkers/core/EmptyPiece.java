@@ -1,9 +1,12 @@
 package com.nekechs.shpee.checkers.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class EmptyPiece extends Piece{
 
     @Override
-    public void move(Move move) {
+    public void move(CaptureMove move) {
 
     }
     public char getPieceType() {
@@ -12,5 +15,10 @@ public class EmptyPiece extends Piece{
 
     public String toString() {
         return "  ";
+    }
+
+    @Override
+    public List<MoveVector.Direction> getPathDirections() {
+        return new ArrayList<>();
     }
 }

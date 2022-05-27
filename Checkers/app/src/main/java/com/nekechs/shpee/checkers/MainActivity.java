@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import com.nekechs.shpee.checkers.core.CheckersGame;
+import com.nekechs.shpee.checkers.core.Game;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
 
         final TextView chessTextThingy = (TextView) findViewById(R.id.textView);
 
-        CheckersGame game = new CheckersGame();
+        Game game = new Game();
         chessTextThingy.setText(game.toString());
     }
 }

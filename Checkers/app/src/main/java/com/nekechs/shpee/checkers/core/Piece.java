@@ -1,35 +1,30 @@
 package com.nekechs.shpee.checkers.core;
 
-import android.graphics.Point;
-
 import java.util.List;
 
 public abstract class Piece {
-    final Team team;
     private PositionVector position;
-    final Board parentBoard;
+    final Team team;
 
     public Piece(PositionVector startingPosition, Team team) {
         this.position = startingPosition;
         this.team = team;
-        parentBoard = team.board;
-
-        team.addPiece(this);
     }
 
     public Piece() {
-        team = null;
-        parentBoard = null;
+        this.team = null;
     }
 
-    Piece(Piece p) {
-        this.team = p.team;
-        this.position = new PositionVector(p.position);
-        parentBoard =
-    }
+//    Piece(Piece p) {
+//        this.team = p.team;
+//        this.position = new PositionVector(p.position);
+//        parentBoard =
+//    }
 
     //TODO: Figure out move logic based on how checkers works
-    public abstract void move(Move move);
+    public abstract void move(CaptureMove move);
+
+    public abstract List<MoveVector.Direction> getPathDirections();
     public abstract char getPieceType();
 
     public PositionVector getPosition() {
@@ -42,10 +37,6 @@ public abstract class Piece {
 
     public int getCol() {
         return position.col;
-    }
-
-    public Team getPieceTeam() {
-        return team;
     }
 
     public String toString() {

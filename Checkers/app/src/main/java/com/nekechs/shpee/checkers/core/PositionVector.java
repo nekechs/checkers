@@ -1,5 +1,7 @@
 package com.nekechs.shpee.checkers.core;
 
+import java.util.Optional;
+
 public class PositionVector extends BoardVector {
     // The number of rows and columns that are present
     private int maxRow = 8;
@@ -35,6 +37,24 @@ public class PositionVector extends BoardVector {
         PositionVector newVector = new PositionVector(newRow, newCol);
 
         return newVector;
+    }
+
+    public Optional<MoveVector> getDiagonalVectorFromSubtract(BoardVector vector) {
+        int newRow = super.row - vector.row;
+        int newCol = super.col - vector.col;
+
+        if(Math.abs(newRow) != Math.abs(newCol)) {
+            return Optional.empty();
+        }
+
+        MoveVector relativeVector;
+
+        relativeVector = MoveVector.getClosestDiagnonalVector(newRow, newCol);
+
+        if(relativeVector.magnitude == 0) {
+            return Optional.empty();
+        }
+        return Optional.of(relativeVector);
     }
 
     /**

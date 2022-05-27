@@ -2,76 +2,114 @@ package com.nekechs.shpee.checkers.core;
 
 import com.nekechs.shpee.checkers.core.exceptions.OutOfBoardException;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
-public abstract class Board {
-    int maxRow;
-    int maxCol;
+public class Board {
+    final Piece[][] grid = new Piece[8][8];
 
-    ArrayList<ArrayList<Optional<Piece>>> pieceGrid;
+    static final PositionVector WHITE_RIGHT_CORNER = new PositionVector(7,7);
+    static final PositionVector BLACK_RIGHT_CORNER = new PositionVector(0,0);
 
-    public Board(int maxRow, int maxCol) {
-        this.maxRow = maxRow;
-        this.maxCol = maxCol;
+    static final PositionVector[] whiteStartingPositions = {
+            new PositionVector(7,0),
+            new PositionVector(5,0),
+            new PositionVector(7,2),
+            new PositionVector(5,2),
+            new PositionVector(7,4),
+            new PositionVector(5,4),
+            new PositionVector(7,6),
+            new PositionVector(5,6),
+            new PositionVector(6,1),
+            new PositionVector(6,3),
+            new PositionVector(6,5),
+            new PositionVector(6,7),
+    };
 
-        pieceGrid = new ArrayList<ArrayList<Optional<Piece> >>();
-        // Note that we do not actually put the pieces on the board yet, because that is done through
-        // the subclass of Board.
+    static final PositionVector[] blackStartingPosition = {
+            new PositionVector(2,1),
+            new PositionVector(0,1),
+            new PositionVector(2,3),
+            new PositionVector(0,3),
+            new PositionVector(2,5),
+            new PositionVector(0,5),
+            new PositionVector(2,7),
+            new PositionVector(0,7),
+            new PositionVector(1,0),
+            new PositionVector(1,2),
+            new PositionVector(1,4),
+            new PositionVector(1,6)
+    };
 
-        for(int i = 0; i < maxRow; i++) {
-            ArrayList<Optional<Piece>> rowArray = new ArrayList<Optional<Piece>>();
-            for(int j = 0; j < maxCol; j++) {
-                rowArray.add(Optional.empty());
-            }
+    Game game;
+    Team whoseTurn;
 
-            pieceGrid.add(rowArray);
+    public Board(Game game) {
+        this.game = game;
+        whoseTurn = game.white;
+
+        List<Piece> pieceList = new ArrayList<>();
+        for(PositionVector vect : whiteStartingPositions) {
+            pieceList.add(new CheckersPawn(vect, game.white));
+        }
+
+        for(PositionVector vect : blackStartingPosition) {
+            pieceList.add(new CheckersPawn(vect, game.black));
+        }
+
+        try{
+            addPiecesToBoard(pieceList);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    protected void addPiecesToBoard(List<Piece> pieces) throws OutOfBoardException {
+    public Board(Board b) {
+        this.game = b.game;
+        this.whoseTurn = b.whoseTurn;
+
+        try{
+            addPiecesToBoard(game.white.pieceList);
+            addPiecesToBoard(game.black.pieceList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Switches the team whose turn it is for this board instance. If the team is white, switch to
+     * black (and vice versa).
+     */
+    public void switchWhoseTurn() {
+        whoseTurn = whoseTurn.equals(game.white) ? game.black : game.white;
+    }
+
+    public void addPiecesToBoard(List<Piece> pieces) throws OutOfBoardException {
         for(Piece piece : pieces) {
             if(piece.getPosition().checkInBounds()) {
                 int rowVal = piece.getRow();
                 int colVal = piece.getCol();
 
-                pieceGrid.get(rowVal).set(colVal, Optional.of(piece));
+//                pieceGrid.get(rowVal).set(colVal, Optional.of(piece));
+                grid[rowVal][colVal] = piece;
             } else {
                 throw new OutOfBoardException("Error: Tried to add a piece that is out of bounds to a board.");
             }
         }
     }
 
-    public Optional<Piece> getPieceAtPosition(PositionVector position) {
-        int rowVal = position.getRow();
-        int colVal = position.getCol();
-
-        return pieceGrid.get(rowVal).get(colVal);
-    }
-
-    /**
-     * Gets the maximum number of rows for this board.
-     * @return integer guaranteed to be at least 1
-     */
-    public abstract int getBoardMaxRow();
-
-    /**
-     * Gets the maximum number of rows for this board.
-     * @return integer gruaranteed to be at least 1
-     */
-    public abstract int getBoardMaxCol();
-
     @Override
     public String toString() {
-        String str = "";
-        for(int i = 0; i < maxRow; i++) {
-            for(int j = 0; j < maxCol; j++) {
-                str = str + pieceGrid.get(i).get(j).orElse(new EmptyPiece()).toString() + "  ";
+        StringBuilder str = new StringBuilder();
+        for(int i = 0; i < 8; i++) {
+            for(int j = 0; j < 8; j++) {
+//                str = str + pieceGrid.get(i).get(j).orElse(new EmptyPiece()).toString() + "  ";
+                str.append(grid[i][j] == null ? "  " : grid[i][j].toString());
             }
-            str = str + "\n";
+            str.append("\n");
         }
 
-        return str;
+        return str.toString();
     }
 }

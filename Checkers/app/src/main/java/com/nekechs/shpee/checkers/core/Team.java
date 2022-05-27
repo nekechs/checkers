@@ -1,3 +1,4 @@
+
 package com.nekechs.shpee.checkers.core;
 
 import java.util.List;
@@ -11,22 +12,23 @@ import java.util.ArrayList;
  */
 public class Team {
     final char teamColor;
-    final Board board;
     final PositionVector teamOrigin;
+    final MoveVector.Direction movementDirection;
 
     final List<Piece> pieceList;
 
-    public Team(Board board, char teamColor, List<Piece> existingPieceList, PositionVector teamOrigin) {
-        this.board = board;
+    public Team(char teamColor, List<Piece> existingPieceList, PositionVector teamOrigin) {
         this.teamColor = teamColor;
 
         this.pieceList = existingPieceList;
 
         this.teamOrigin = teamOrigin;
+
+        this.movementDirection = getDirection(teamOrigin);
     }
 
-    public Team(Board board, char teamColor, PositionVector teamOrigin) {
-        this(board, teamColor, new ArrayList<>(), teamOrigin);
+    public Team(char teamColor, PositionVector teamOrigin) {
+        this(teamColor, new ArrayList<>(), teamOrigin);
     }
 
     public void addPiece(Piece piece) {
@@ -45,7 +47,22 @@ public class Team {
         return teamOrigin;
     }
 
-//    public MoveVector getDirection() {
-//
-//    }
+    protected static MoveVector.Direction getDirection(PositionVector teamOrigin) {
+        int rowVal = teamOrigin.row;
+        int colVal = teamOrigin.col;
+
+        if(rowVal < 4) {
+            if(colVal < 4) {
+                return MoveVector.Direction.SOUTH;
+            } else {
+                return MoveVector.Direction.WEST;
+            }
+        } else {
+            if(colVal < 4) {
+                return MoveVector.Direction.EAST;
+            } else {
+                return MoveVector.Direction.NORTH;
+            }
+        }
+    }
 }
