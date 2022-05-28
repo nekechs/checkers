@@ -1,10 +1,14 @@
 package com.nekechs.shpee.checkers.core;
 
+import com.nekechs.shpee.checkers.core.vectors.BoardVector;
 import com.nekechs.shpee.checkers.core.vectors.Movement;
 import com.nekechs.shpee.checkers.core.vectors.PositionVector;
+import com.nekechs.shpee.checkers.core.vectors.RelativeVector;
+import com.nekechs.shpee.checkers.core.vectors.RelativeVectorFactory;
 import com.nekechs.shpee.checkers.core.vectors.VectorFactory;
 
 import java.util.List;
+import java.util.Optional;
 
 public class CaptureMove extends Move {
     List<VectorFactory.Direction> movementSequence;
@@ -28,10 +32,24 @@ public class CaptureMove extends Move {
      */
     public boolean isPlausible() {
         Movement currentMovement;
-        PositionVector lastPositionSpot;
+        PositionVector lastPositionSpot = startingPiece;
 
-        for(VectorFactory.Direction directions : movementSequence) {
+        RelativeVectorFactory relativeVectorFactory = new RelativeVectorFactory();
 
+        PositionVector currentPositionSpot;
+
+        for(VectorFactory.Direction direction : movementSequence) {
+            Optional<BoardVector> possibleVector = relativeVectorFactory
+                                                    .generateCaptureVector(direction);
+
+            // If the move is not even present, something has gone wrong, and return false
+            if(!possibleVector.isPresent()) return false;
+
+            RelativeVector vector = (RelativeVector)possibleVector.get();
+            currentPositionSpot = lastPositionSpot.addVector(vector);
+
+            if(!currentPositionSpot.checkInBounds()) return false;
+            lastPositionSpot = currentPositionSpot;
         }
         return true;
     }

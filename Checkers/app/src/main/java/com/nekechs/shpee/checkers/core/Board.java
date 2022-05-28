@@ -43,11 +43,11 @@ public class Board {
     };
 
     Game game;
-    Team whoseTurn;
+    int moveNumber;
 
     public Board(Game game) {
         this.game = game;
-        whoseTurn = game.white;
+        moveNumber = game.currentMoveNumber;
 
         List<Piece> pieceList = new ArrayList<>();
         for(PositionVector vect : whiteStartingPositions) {
@@ -67,7 +67,7 @@ public class Board {
 
     public Board(Board b) {
         this.game = b.game;
-        this.whoseTurn = b.whoseTurn;
+        this.moveNumber = b.moveNumber;
 
         try{
             addPiecesToBoard(game.white.pieceList);
@@ -75,14 +75,6 @@ public class Board {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Switches the team whose turn it is for this board instance. If the team is white, switch to
-     * black (and vice versa).
-     */
-    public void switchWhoseTurn() {
-        whoseTurn = whoseTurn.equals(game.white) ? game.black : game.white;
     }
 
     public void addPiecesToBoard(List<Piece> pieces) throws OutOfBoardException {

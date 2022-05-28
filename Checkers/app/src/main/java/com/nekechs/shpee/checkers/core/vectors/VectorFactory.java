@@ -52,4 +52,7 @@ public abstract class VectorFactory {
     public Optional<BoardVector> generateCaptureVector(Direction direction) {
         return generateVector(direction, 2);
     }
+    public Optional<BoardVector> generateNormalMoveVector(Direction direction) {
+        return generateVector(direction, 1);
+    }
 }

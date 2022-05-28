@@ -18,21 +18,20 @@ public class Team {
     final char teamColor;
     final PositionVector teamOrigin;
     final VectorFactory.Direction movementDirection;
+    final int startingMoveNumber;
 
     final List<Piece> pieceList;
 
-    public Team(char teamColor, List<Piece> existingPieceList, PositionVector teamOrigin) {
+    public Team(char teamColor, List<Piece> existingPieceList, PositionVector teamOrigin, int startingMoveNumber) {
         this.teamColor = teamColor;
-
         this.pieceList = existingPieceList;
-
         this.teamOrigin = teamOrigin;
-
         this.movementDirection = getDirection(teamOrigin);
+        this.startingMoveNumber = startingMoveNumber;
     }
 
-    public Team(char teamColor, PositionVector teamOrigin) {
-        this(teamColor, new ArrayList<>(), teamOrigin);
+    public Team(char teamColor, PositionVector teamOrigin, int startingMoveNumber) {
+        this(teamColor, new ArrayList<>(), teamOrigin, startingMoveNumber);
     }
 
     public void addPiece(Piece piece) {

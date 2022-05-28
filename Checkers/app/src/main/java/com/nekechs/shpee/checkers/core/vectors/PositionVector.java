@@ -14,7 +14,7 @@ public class PositionVector extends BoardVector {
     }
 
     public PositionVector(int row, int col) {
-        super(row % maxRow,col % maxCol);
+        super(row,col);
     }
 
     PositionVector(BoardVector v) {
@@ -25,9 +25,7 @@ public class PositionVector extends BoardVector {
         int newRow = super.row + vector.row;
         int newCol = super.col + vector.col;
 
-        PositionVector newVector = new PositionVector(newRow, newCol);
-
-        return newVector;
+        return new PositionVector(newRow, newCol);
     }
 
     public RelativeVector minusVector(RelativeVector vector) {
