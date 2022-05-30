@@ -2,6 +2,7 @@ package com.nekechs.shpee.checkers.core;
 
 import com.nekechs.shpee.checkers.core.vectors.PositionVector;
 
+import java.util.Optional;
 import java.util.Stack;
 public class Game {
     Stack<Board> boards;
@@ -20,18 +21,23 @@ public class Game {
     final Team black;
 
     public Game() {
+        white = new Team('w', Board.WHITE_RIGHT_CORNER, 1);
+        black = new Team('b', Board.BLACK_RIGHT_CORNER, 0);
+
         boards = new Stack<Board>();
         boards.push(new Board(this));
 
         currentMoveNumber = 0;
 
-        white = new Team('w', Board.WHITE_RIGHT_CORNER, 1);
-        black = new Team('b', Board.BLACK_RIGHT_CORNER, 0);
-
     }
 
     public void processMoveRequest(Move move) {
         PositionVector startingPoint = move.getStartingSpot();
+        Optional<Piece> possiblePiece = boards.peek().getPieceAtPosition(startingPoint);
+
+        if(move instanceof NormalMove) {
+
+        }
     }
 
     public Team getWhoseTurn() /*throws NoTeamFoundException*/ {

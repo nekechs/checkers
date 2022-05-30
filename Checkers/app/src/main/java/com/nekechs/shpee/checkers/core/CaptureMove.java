@@ -57,4 +57,14 @@ public class CaptureMove extends Move {
     public PositionVector getStartingSpot() {
         return startingPiece;
     }
+
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Start at: ").append(startingPiece.toString());
+        for(VectorFactory.Direction direction : movementSequence) {
+            builder.append(direction);
+        }
+
+        return builder.toString();
+    }
 }

@@ -24,4 +24,8 @@ public abstract class BoardVector {
 //    public abstract int getMaxRow();
 //    public abstract int getMaxCol();
 
+    public String toString() {
+        return "VECTOR: (" + row + ", " + col + ")";
+    }
+
 }

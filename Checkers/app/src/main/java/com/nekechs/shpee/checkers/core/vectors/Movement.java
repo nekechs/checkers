@@ -58,6 +58,10 @@ public class Movement{
     }
 
     static Optional<Movement> getClosestDiagnonalVector(int row, int col) {
+        return getClosestDiagnonalVector(row, col, MOVEMENT_DISTANCE.SINGLE);
+    }
+
+    static Optional<Movement> getClosestDiagnonalVector(int row, int col, MOVEMENT_DISTANCE distance) {
         if(row == 0 && col == 0)
             return Optional.empty();
 
@@ -68,18 +72,44 @@ public class Movement{
         int colDirection = col / (Math.max(1, Math.abs(col)));
 
         if(rowDirection == 1 && colDirection == 1) {
-            return Optional.of(new Movement(VectorFactory.Direction.NORTHEAST, MOVEMENT_DISTANCE.SINGLE));
+            return Optional.of(new Movement(VectorFactory.Direction.SOUTHEAST, distance));
         }
         if(rowDirection == -1 && colDirection == 1) {
-            return Optional.of(new Movement(VectorFactory.Direction.SOUTHEAST, MOVEMENT_DISTANCE.SINGLE));
+            return Optional.of(new Movement(VectorFactory.Direction.NORTHEAST, distance));
         }
         if(rowDirection == -1 && colDirection == -1) {
-            return Optional.of(new Movement(VectorFactory.Direction.SOUTHWEST, MOVEMENT_DISTANCE.SINGLE));
+            return Optional.of(new Movement(VectorFactory.Direction.NORTHWEST, distance));
         }
         if(rowDirection == 1 && colDirection == -1) {
-            return Optional.of(new Movement(VectorFactory.Direction.NORTHWEST, MOVEMENT_DISTANCE.SINGLE));
+            return Optional.of(new Movement(VectorFactory.Direction.SOUTHWEST, distance));
         }
 
         return Optional.empty();
+    }
+
+    public static Optional<Movement> possibleVectorToMovement(BoardVector vector) {
+        int rowVal = vector.row;
+        int colVal = vector.col;
+
+        int rowMagnitude = Math.abs(rowVal);
+        int colMagnitude = Math.abs(colVal);
+
+        if(rowMagnitude == colMagnitude) {
+            if(rowMagnitude == 1) {
+                return getClosestDiagnonalVector(rowVal, colVal);
+            }
+            if(colMagnitude == 2) {
+                return getClosestDiagnonalVector(rowVal, colVal, MOVEMENT_DISTANCE.DOUBLE);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public VectorFactory.Direction getDirection() {
+        return direction;
+    }
+
+    public MOVEMENT_DISTANCE getDistance() {
+        return distance;
     }
 }

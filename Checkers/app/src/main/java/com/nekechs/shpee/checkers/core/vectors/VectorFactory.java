@@ -45,6 +45,29 @@ public abstract class VectorFactory {
             }
             return false;
         }
+
+        public String toString() {
+            switch(id) {
+                case 0:
+                    return "N";
+                case 1:
+                    return "NE";
+                case 2:
+                    return "E";
+                case 3:
+                    return "SE";
+                case 4:
+                    return "S";
+                case 5:
+                    return "SW";
+                case 6:
+                    return "W";
+                case 7:
+                    return "NW";
+            }
+
+            return "UNKNOWN DIRECTION";
+        }
     }
 
     public abstract Optional<BoardVector> generateVector(int row, int col);

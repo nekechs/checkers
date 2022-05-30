@@ -28,7 +28,7 @@ public class PositionVector extends BoardVector {
         return new PositionVector(newRow, newCol);
     }
 
-    public RelativeVector minusVector(RelativeVector vector) {
+    public RelativeVector minusVector(BoardVector vector) {
         int newRow = super.row - vector.row;
         int newCol = super.col - vector.col;
 

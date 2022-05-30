@@ -5,6 +5,7 @@ import com.nekechs.shpee.checkers.core.vectors.PositionVector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Board {
     final Piece[][] grid = new Piece[8][8];
@@ -89,6 +90,15 @@ public class Board {
                 throw new OutOfBoardException("Error: Tried to add a piece that is out of bounds to a board.");
             }
         }
+    }
+
+    public Optional<Piece> getPieceAtPosition(PositionVector position) {
+        int rowVal = position.getRow();
+        int colVal = position.getCol();
+
+        Piece piece = grid[rowVal][colVal];
+
+        return piece == null ? Optional.empty() : Optional.of(piece);
     }
 
     @Override

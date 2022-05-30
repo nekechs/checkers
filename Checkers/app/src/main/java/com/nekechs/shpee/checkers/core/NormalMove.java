@@ -35,4 +35,8 @@ public class NormalMove extends Move{
 
         return false;
     }
+
+    public String toString() {
+        return "Start at: " + startingSpot.toString() + "; Direction: " + moveDirection.toString();
+    }
 }
