@@ -28,6 +28,14 @@ public class PositionVector extends BoardVector {
         return new PositionVector(newRow, newCol);
     }
 
+    public PositionVector addMovement(Movement movement) {
+        return addVector(movement.vector);
+    }
+
+    public PositionVector addDirection(VectorFactory.Direction direction, Movement.MOVEMENT_DISTANCE distance) {
+        return addMovement(new Movement(direction, distance));
+    }
+
     public RelativeVector minusVector(BoardVector vector) {
         int newRow = super.row - vector.row;
         int newCol = super.col - vector.col;

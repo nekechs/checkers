@@ -1,5 +1,6 @@
 package com.nekechs.shpee.checkers.core;
 
+import com.nekechs.shpee.checkers.core.vectors.Movement;
 import com.nekechs.shpee.checkers.core.vectors.PositionVector;
 
 import java.util.Optional;
@@ -31,13 +32,43 @@ public class Game {
 
     }
 
-    public void processMoveRequest(Move move) {
+    public GameState processMoveRequest(Move move) {
         PositionVector startingPoint = move.getStartingSpot();
         Optional<Piece> possiblePiece = boards.peek().getPieceAtPosition(startingPoint);
 
-        if(move instanceof NormalMove) {
-
+        if(!possiblePiece.isPresent()) {
+            // No piece is present at the square you start at; Illegal move!!!!
+            return GameState.ILLEGALMOVE;
         }
+
+        Piece piece = possiblePiece.get();
+
+        if(move instanceof NormalMove) {
+            Board newBoard = new Board(boards.peek());
+            NormalMove normalMove = (NormalMove) move;
+            if(!piece.isValidMoveDirection(normalMove.moveDirection) ) {
+                return GameState.ILLEGALMOVE;
+            }
+
+            PositionVector finalPosition = startingPoint.addDirection(normalMove.moveDirection, Movement.MOVEMENT_DISTANCE.SINGLE);
+            Optional<Piece> possibleDestination = newBoard.getPieceAtPosition(finalPosition);
+
+            if(possibleDestination.isPresent()) {
+                // This means that we are trying to make a normal move into a spot where a piece
+                // already exists, whether it's our own piece or it an enemy piece. That is illegal.
+                return GameState.ILLEGALMOVE;
+            }
+
+            // Swap the values!!
+            newBoard.grid[finalPosition.getRow()][finalPosition.getCol()] = piece;
+            newBoard.grid[startingPoint.getRow()][startingPoint.getCol()] = null;
+
+            currentMoveNumber++;
+            boards.push(newBoard);
+            return GameState.NORMALMOVE;
+        }
+
+        return GameState.ILLEGALMOVE;
     }
 
     public Team getWhoseTurn() /*throws NoTeamFoundException*/ {

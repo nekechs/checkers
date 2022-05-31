@@ -7,16 +7,41 @@ import com.nekechs.shpee.checkers.core.vectors.RelativeVector;
 import com.nekechs.shpee.checkers.core.vectors.RelativeVectorFactory;
 import com.nekechs.shpee.checkers.core.vectors.VectorFactory;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
-public class CaptureMove extends Move {
+public class CaptureMove
+        extends Move {
     List<VectorFactory.Direction> movementSequence;
     PositionVector startingPiece;
 
     public CaptureMove(PositionVector startingPiece, List<VectorFactory.Direction> movementSequence) {
         this.startingPiece = startingPiece;
         this.movementSequence = movementSequence;
+    }
+
+    @Override
+    public Iterator<PositionVector> iterator() {
+        Iterator<PositionVector> it = new Iterator<PositionVector>() {
+            PositionVector currentVector = startingPiece;
+            int i = 0;
+
+            @Override
+            public boolean hasNext() {
+                return i < movementSequence.size();
+            }
+
+            @Override
+            public PositionVector next() {
+                PositionVector prevVector = currentVector;
+                currentVector = currentVector.addDirection(movementSequence.get(i), Movement.MOVEMENT_DISTANCE.DOUBLE);
+                i++;
+                return prevVector;
+            }
+        };
+
+        return it;
     }
 
     /**
@@ -52,6 +77,16 @@ public class CaptureMove extends Move {
             lastPositionSpot = currentPositionSpot;
         }
         return true;
+    }
+
+    @Override
+    public boolean isPromotionAttempt(Team team) {
+        PositionVector currentPosition = startingPiece;
+        for(VectorFactory.Direction direction : movementSequence) {
+            currentPosition = currentPosition.addDirection(direction, Movement.MOVEMENT_DISTANCE.DOUBLE);
+        }
+
+        return checkPromotionSquare(team, currentPosition);
     }
 
     public PositionVector getStartingSpot() {

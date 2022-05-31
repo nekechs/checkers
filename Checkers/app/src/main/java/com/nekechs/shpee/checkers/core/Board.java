@@ -101,6 +101,10 @@ public class Board {
         return piece == null ? Optional.empty() : Optional.of(piece);
     }
 
+    public boolean pieceExistsAtPosition(PositionVector positionVector) {
+        return grid[positionVector.getRow()][positionVector.getCol()] != null;
+    }
+
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();

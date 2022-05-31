@@ -25,10 +25,11 @@ public abstract class Piece {
 //    }
 
     //TODO: Figure out move logic based on how checkers works
-    public abstract void move(CaptureMove move);
+    public abstract void move(Move move);
 
     public abstract List<VectorFactory.Direction> getPathDirections();
     public abstract char getPieceType();
+    public abstract boolean isValidMoveDirection(VectorFactory.Direction direction);
 
     public PositionVector getPosition() {
         return position;
