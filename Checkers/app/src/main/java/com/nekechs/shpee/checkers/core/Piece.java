@@ -12,6 +12,8 @@ public abstract class Piece {
     public Piece(PositionVector startingPosition, Team team) {
         this.position = startingPosition;
         this.team = team;
+
+        team.pieceList.add(this);
     }
 
     public Piece() {
@@ -33,6 +35,9 @@ public abstract class Piece {
 
     public PositionVector getPosition() {
         return position;
+    }
+    void setPosition(PositionVector position) {
+        this.position = position;
     }
 
     public int getRow() {

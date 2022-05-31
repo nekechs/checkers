@@ -4,6 +4,7 @@ import com.nekechs.shpee.checkers.core.exceptions.OutOfBoardException;
 import com.nekechs.shpee.checkers.core.vectors.PositionVector;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,6 +60,9 @@ public class Board {
             pieceList.add(new CheckersPawn(vect, game.black));
         }
 
+//        System.out.println(game.white.pieceList);
+//        System.out.println(game.black.pieceList);
+
         try{
             addPiecesToBoard(pieceList);
         } catch (Exception e) {
@@ -76,6 +80,8 @@ public class Board {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        System.out.println("Duping board");
     }
 
     public void addPiecesToBoard(List<Piece> pieces) throws OutOfBoardException {
@@ -109,12 +115,22 @@ public class Board {
     public String toString() {
         StringBuilder str = new StringBuilder();
         for(int i = 0; i < 8; i++) {
+            str.append((-i + 8) + "\t");
             for(int j = 0; j < 8; j++) {
 //                str = str + pieceGrid.get(i).get(j).orElse(new EmptyPiece()).toString() + "  ";
-                str.append(grid[i][j] == null ? "  " : grid[i][j].toString());
+                str.append(grid[i][j] == null ? ( (i + j) % 2 == 0 ? "  " : "##") : grid[i][j].toString());
             }
             str.append("\n");
         }
+
+        char[] coordList = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
+
+        str.append("\t ");
+        for(char character : coordList) {
+            str.append(character).append(" ");
+        }
+
+        str.append("\n");
 
         return str.toString();
     }

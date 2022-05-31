@@ -55,6 +55,7 @@ public class Movement{
         this.distance = distance;
 
         this.vector = movementVector(direction, distance);
+//        System.out.println("Vector from Movement: " + this.vector + "---given a direction of " + direction);
     }
 
     static Optional<Movement> getClosestDiagnonalVector(int row, int col) {

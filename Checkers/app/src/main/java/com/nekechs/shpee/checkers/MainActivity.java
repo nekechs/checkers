@@ -26,16 +26,28 @@ public class MainActivity extends AppCompatActivity {
         Game game = new Game();
         chessTextThingy.setText(game.toString());
 
-        final Button button = (Button) findViewById(R.id.move_test_button);
+        final Button testMoveButton = (Button) findViewById(R.id.move_test_button);
+        final Button dupeButton = (Button) findViewById(R.id.print_button);
+
         final EditText textInput = (EditText) findViewById(R.id.move_text_input);
 
-        button.setOnClickListener(new View.OnClickListener() {
+        testMoveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String input = textInput.getText().toString();
                 Optional<Move> moveOptional = MoveParser.parseMove(MoveParser.parseTextMoveList(input));
 
-                moveOptional.ifPresent(System.out::println);
+                moveOptional.ifPresent(game::processMoveRequest);
+                chessTextThingy.setText(game.toString());
+                System.out.println(game);
+            }
+        });
+
+        dupeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                game.testBoardDuplication();
+                chessTextThingy.setText(game.toString());
             }
         });
     }
