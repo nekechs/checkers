@@ -146,7 +146,9 @@ public class MoveParser {
             Optional<Movement> possibleMovement = Movement.possibleVectorToMovement(moveVector);
             if(possibleMovement.isPresent()) {
                 Movement movement = possibleMovement.get();
-                return Optional.of(new NormalMove(startingPosition, movement.getDirection()));
+                return movement.getDistance() == Movement.MOVEMENT_DISTANCE.SINGLE ?
+                        Optional.of(new NormalMove(startingPosition, movement.getDirection())) :
+                        Optional.of(new CaptureMove(startingPosition, new LinkedList<>(List.of(movement.getDirection()))));
 //                if (movement.getDistance() == Movement.MOVEMENT_DISTANCE.SINGLE) {
 //                    return Optional.of(new NormalMove(startingPosition, movement.getDirection()));
 //                }

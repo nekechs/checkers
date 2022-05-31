@@ -63,28 +63,20 @@ public class Board {
 //        System.out.println(game.white.pieceList);
 //        System.out.println(game.black.pieceList);
 
-        try{
-            addPiecesToBoard(pieceList);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        addPiecesToBoard(pieceList);
     }
 
     public Board(Board b) {
         this.game = b.game;
         this.moveNumber = b.moveNumber;
 
-        try{
-            addPiecesToBoard(game.white.pieceList);
-            addPiecesToBoard(game.black.pieceList);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        addPiecesToBoard(game.white.pieceList);
+        addPiecesToBoard(game.black.pieceList);
 
         System.out.println("Duping board");
     }
 
-    public void addPiecesToBoard(List<Piece> pieces) throws OutOfBoardException {
+    public void addPiecesToBoard(List<Piece> pieces) {
         for(Piece piece : pieces) {
             if(piece.getPosition().checkInBounds()) {
                 int rowVal = piece.getRow();
@@ -92,8 +84,6 @@ public class Board {
 
 //                pieceGrid.get(rowVal).set(colVal, Optional.of(piece));
                 grid[rowVal][colVal] = piece;
-            } else {
-                throw new OutOfBoardException("Error: Tried to add a piece that is out of bounds to a board.");
             }
         }
     }

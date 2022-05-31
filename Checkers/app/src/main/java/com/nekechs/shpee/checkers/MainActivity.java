@@ -38,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
                 Optional<Move> moveOptional = MoveParser.parseMove(MoveParser.parseTextMoveList(input));
 
                 moveOptional.ifPresent(game::processMoveRequest);
+                textInput.getText().clear();
+
                 chessTextThingy.setText(game.toString());
                 System.out.println(game);
             }

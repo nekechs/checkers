@@ -39,15 +39,17 @@ public class Game {
         PositionVector startingPoint = move.getStartingSpot();
         Optional<Piece> possiblePiece = boards.peek().getPieceAtPosition(startingPoint);
 
-        if(!possiblePiece.isPresent() || possiblePiece.get().team.equals(getWhoseTurn())) {
+        if(!possiblePiece.isPresent() || !possiblePiece.get().team.equals(getWhoseTurn())) {
             // No piece is present at the square you start at; Illegal move!!!!
             return GameState.ILLEGALMOVE;
         }
 
+        System.out.println("CURRENT TURN: " + getWhoseTurn().teamColor);
+
         Piece piece = possiblePiece.get();
 
         if(move instanceof NormalMove) {
-            System.out.println("this be normal move");
+//            System.out.println("this be normal move");
             Board newBoard = new Board(boards.peek());
             NormalMove normalMove = (NormalMove) move;
             if(!piece.isValidMoveDirection(normalMove.moveDirection) ) {
@@ -83,13 +85,11 @@ public class Game {
             PositionVector currentDestination = startingPoint;
             PositionVector previousDestination;
 
-            System.out.println("Capture move size: " + captureMove.movementSequence.size());
+//            System.out.println("Capture move size: " + captureMove.movementSequence.size());
 
             for(VectorFactory.Direction direction : captureMove.movementSequence) {
-                System.out.println("HuhH???");
-
                 if(!piece.isValidMoveDirection(direction)) {
-//                    System.out.println("bruh");
+                    System.out.println("bruh");
                     return GameState.ILLEGALMOVE;
                 }
 
@@ -100,6 +100,8 @@ public class Game {
 
                 Optional<Piece> possibleCapturedPiece = board.getPieceAtPosition(captureSquare);
                 Optional<Piece> possibleDestinationPiece = board.getPieceAtPosition(currentDestination);
+
+                System.out.println(getWhoseTurn().teamColor + " " + captureSquare);
 
                 if(possibleDestinationPiece.isPresent() ||
                         !possibleCapturedPiece.isPresent() ||
@@ -121,6 +123,7 @@ public class Game {
 
                 possibleCapturedPiece.get().setPosition(new PositionVector(-1,-1));
                 boards.push(board);
+                System.out.println("HuhH???");
             }
 
             return GameState.NORMALMOVE;
