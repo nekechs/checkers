@@ -8,8 +8,8 @@ import java.util.List;
 
 public class CheckersPawn extends Piece{
 
-    public CheckersPawn(PositionVector vect, Team team) {
-        super(vect, team);
+    public CheckersPawn(Team team) {
+        super(team);
     }
 
     @Override

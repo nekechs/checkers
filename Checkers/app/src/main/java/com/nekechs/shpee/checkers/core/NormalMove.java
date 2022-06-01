@@ -11,18 +11,18 @@ import java.util.Iterator;
 import java.util.Optional;
 
 public class NormalMove extends Move{
-    PositionVector startingSpot;
+    PositionVector startingPosition;
     VectorFactory.Direction moveDirection;
 
     public NormalMove(PositionVector startingSpot, VectorFactory.Direction moveDirection) {
-        this.startingSpot = startingSpot;
+        this.startingPosition = startingSpot;
         this.moveDirection = moveDirection;
     }
 
     @Override
     public Iterator<PositionVector> iterator() {
         Iterator<PositionVector> it = new Iterator<PositionVector>() {
-            PositionVector currentVector = startingSpot;
+            PositionVector currentVector = startingPosition;
             int i = 0;
 
             @Override
@@ -42,8 +42,13 @@ public class NormalMove extends Move{
         return it;
     }
 
-    public PositionVector getStartingSpot() {
-        return startingSpot;
+    public PositionVector getStartingPosition() {
+        return startingPosition;
+    }
+
+    @Override
+    public PositionVector getFinalSpot() {
+        return startingPosition.addDirection(moveDirection, Movement.MOVEMENT_DISTANCE.SINGLE);
     }
 
     public boolean isPlausible() {
@@ -52,7 +57,7 @@ public class NormalMove extends Move{
 
         if(possibleVector.isPresent()) {
             RelativeVector vector = new RelativeVector(possibleVector.get());
-            PositionVector destination = startingSpot.addVector(vector);
+            PositionVector destination = startingPosition.addVector(vector);
 
             return destination.checkInBounds();
         }
@@ -62,12 +67,12 @@ public class NormalMove extends Move{
 
     public String toString() {
 
-        return "Start at: " + startingSpot.toString() + "; Direction: " + moveDirection.toString();
+        return "Start at: " + startingPosition.toString() + "; Direction: " + moveDirection.toString();
     }
 
     @Override
     public boolean isPromotionAttempt(Team team) {
-        PositionVector finalSpot = startingSpot.addDirection(moveDirection, Movement.MOVEMENT_DISTANCE.SINGLE);
+        PositionVector finalSpot = startingPosition.addDirection(moveDirection, Movement.MOVEMENT_DISTANCE.SINGLE);
         return checkPromotionSquare(team, finalSpot);
     }
 }

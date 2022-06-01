@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
         final Button testMoveButton = (Button) findViewById(R.id.move_test_button);
         final Button dupeButton = (Button) findViewById(R.id.print_button);
+        final Button undoButton = (Button) findViewById(R.id.undo_button);
 
         final EditText textInput = (EditText) findViewById(R.id.move_text_input);
 
@@ -41,15 +42,25 @@ public class MainActivity extends AppCompatActivity {
                 textInput.getText().clear();
 
                 chessTextThingy.setText(game.toString());
-                System.out.println(game);
+//                System.out.println(game);
             }
         });
 
         dupeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                game.testBoardDuplication();
                 chessTextThingy.setText(game.toString());
+//                System.out.println(game);
+            }
+        });
+
+        undoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                game.undoMove();
+
+                chessTextThingy.setText(game.toString());
+//                System.out.println(game);
             }
         });
     }

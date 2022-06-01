@@ -14,17 +14,17 @@ import java.util.Optional;
 public class CaptureMove
         extends Move {
     List<VectorFactory.Direction> movementSequence;
-    PositionVector startingPiece;
+    PositionVector startingPosition;
 
     public CaptureMove(PositionVector startingPiece, List<VectorFactory.Direction> movementSequence) {
-        this.startingPiece = startingPiece;
+        this.startingPosition = startingPiece;
         this.movementSequence = movementSequence;
     }
 
     @Override
     public Iterator<PositionVector> iterator() {
         Iterator<PositionVector> it = new Iterator<PositionVector>() {
-            PositionVector currentVector = startingPiece;
+            PositionVector currentVector = startingPosition;
             int i = 0;
 
             @Override
@@ -57,7 +57,7 @@ public class CaptureMove
      */
     public boolean isPlausible() {
         Movement currentMovement;
-        PositionVector lastPositionSpot = startingPiece;
+        PositionVector lastPositionSpot = startingPosition;
 
         RelativeVectorFactory relativeVectorFactory = new RelativeVectorFactory();
 
@@ -80,22 +80,27 @@ public class CaptureMove
     }
 
     @Override
-    public boolean isPromotionAttempt(Team team) {
-        PositionVector currentPosition = startingPiece;
+    public PositionVector getFinalSpot() {
+        PositionVector currentPosition = startingPosition;
         for(VectorFactory.Direction direction : movementSequence) {
             currentPosition = currentPosition.addDirection(direction, Movement.MOVEMENT_DISTANCE.DOUBLE);
         }
 
-        return checkPromotionSquare(team, currentPosition);
+        return currentPosition;
     }
 
-    public PositionVector getStartingSpot() {
-        return startingPiece;
+    @Override
+    public boolean isPromotionAttempt(Team team) {
+        return checkPromotionSquare(team, getFinalSpot());
+    }
+
+    public PositionVector getStartingPosition() {
+        return startingPosition;
     }
 
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Start at: ").append(startingPiece.toString());
+        builder.append("Start at: ").append(startingPosition.toString());
         for(VectorFactory.Direction direction : movementSequence) {
             builder.append(direction);
         }

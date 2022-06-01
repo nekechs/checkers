@@ -6,8 +6,8 @@ import com.nekechs.shpee.checkers.core.vectors.VectorFactory;
 import java.util.List;
 
 public class CheckersKing extends Piece{
-    public CheckersKing(PositionVector vect, Team team) {
-        super(vect, team);
+    public CheckersKing(Team team) {
+        super(team);
     }
 
     @Override

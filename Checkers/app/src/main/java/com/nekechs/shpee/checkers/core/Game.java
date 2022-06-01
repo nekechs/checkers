@@ -1,7 +1,5 @@
 package com.nekechs.shpee.checkers.core;
 
-import android.graphics.Paint;
-
 import com.nekechs.shpee.checkers.core.vectors.Movement;
 import com.nekechs.shpee.checkers.core.vectors.PositionVector;
 import com.nekechs.shpee.checkers.core.vectors.VectorFactory;
@@ -35,8 +33,15 @@ public class Game {
 
     }
 
+    public void undoMove() {
+        if(boards.size() > 1) {
+            boards.pop();
+            currentMoveNumber--;
+        }
+    }
+
     public GameState processMoveRequest(Move move) {
-        PositionVector startingPoint = move.getStartingSpot();
+        PositionVector startingPoint = move.getStartingPosition();
         Optional<Piece> possiblePiece = boards.peek().getPieceAtPosition(startingPoint);
 
         if(!possiblePiece.isPresent() || !possiblePiece.get().team.equals(getWhoseTurn())) {
@@ -68,16 +73,20 @@ public class Game {
             System.out.println("Direction: " + normalMove.moveDirection + "; Final position: " + finalPosition + "; Starting position: " + startingPoint);
 
             // Swap the values!!
-            piece.setPosition(finalPosition);
+//            piece.setPosition(finalPosition);
+            newBoard.setPiecePosition(piece, finalPosition);
             newBoard.grid[finalPosition.getRow()][finalPosition.getCol()] = piece;
             newBoard.grid[startingPoint.getRow()][startingPoint.getCol()] = null;
-
             currentMoveNumber++;
+
+            if(move.isPromotionAttempt(getWhoseTurn())) {
+                newBoard.promotePieceAtPosition(finalPosition);
+            }
+
             boards.push(newBoard);
             return GameState.NORMALMOVE;
         }
 
-        //TODO: Fix the issue where capturing moves get classified as "NormalMove" which is incorrect
         if(move instanceof CaptureMove) {
             Board board = new Board(boards.peek());
             CaptureMove captureMove = (CaptureMove) move;
@@ -116,16 +125,23 @@ public class Game {
                 board.grid[currentDestination.getRow()][currentDestination.getCol()] = piece;
                 board.grid[captureSquare.getRow()][captureSquare.getCol()] = null;
                 board.grid[previousDestination.getRow()][previousDestination.getCol()] = null;
-                piece.setPosition(currentDestination);
+                board.setPiecePosition(piece, currentDestination);
+//                piece.setPosition(currentDestination);
 
                 // This is an indicator that the piece is captured.
                 currentMoveNumber++;
 
-                possibleCapturedPiece.get().setPosition(new PositionVector(-1,-1));
-                boards.push(board);
+//                possibleCapturedPiece.get().setPosition(new PositionVector(-1,-1));
+                board.setPieceCaptured(possibleCapturedPiece.get());
                 System.out.println("HuhH???");
             }
 
+            // Note: Horribly optimized. TODO: Make this more optimized.
+            if(move.isPromotionAttempt(getWhoseTurn())) {
+                board.promotePieceAtPosition(move.getFinalSpot());
+            }
+
+            boards.push(board);
             return GameState.NORMALMOVE;
         }
 

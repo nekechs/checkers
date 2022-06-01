@@ -5,11 +5,14 @@ import com.nekechs.shpee.checkers.core.vectors.PositionVector;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.TreeSet;
 
 public class Board {
     final Piece[][] grid = new Piece[8][8];
+    final List<PieceState> allPieceStates;
 
     static final PositionVector WHITE_RIGHT_CORNER = new PositionVector(7,7);
     static final PositionVector BLACK_RIGHT_CORNER = new PositionVector(0,0);
@@ -45,45 +48,57 @@ public class Board {
     };
 
     Game game;
-    int moveNumber;
+    final int moveNumber;
 
     public Board(Game game) {
         this.game = game;
+        this.allPieceStates = new LinkedList<>();
         moveNumber = game.currentMoveNumber;
 
-        List<Piece> pieceList = new ArrayList<>();
         for(PositionVector vect : whiteStartingPositions) {
-            pieceList.add(new CheckersPawn(vect, game.white));
+            allPieceStates.add(new PieceState(new CheckersPawn(game.white), vect));
         }
 
         for(PositionVector vect : blackStartingPosition) {
-            pieceList.add(new CheckersPawn(vect, game.black));
+            allPieceStates.add(new PieceState(new CheckersPawn(game.black), vect));
         }
 
 //        System.out.println(game.white.pieceList);
 //        System.out.println(game.black.pieceList);
 
-        addPiecesToBoard(pieceList);
+        addPiecesToBoard(allPieceStates);
     }
 
     public Board(Board b) {
         this.game = b.game;
-        this.moveNumber = b.moveNumber;
+        this.moveNumber = b.moveNumber + 1;
+        this.allPieceStates = new LinkedList<>(b.allPieceStates);
 
-        addPiecesToBoard(game.white.pieceList);
-        addPiecesToBoard(game.black.pieceList);
+//        addPiecesToBoard(game.white.pieceList);
+//        addPiecesToBoard(game.black.pieceList);
+        addPiecesToBoard(allPieceStates);
 
         System.out.println("Duping board");
     }
 
-    public void addPiecesToBoard(List<Piece> pieces) {
-        for(Piece piece : pieces) {
-            if(piece.getPosition().checkInBounds()) {
-                int rowVal = piece.getRow();
-                int colVal = piece.getCol();
+    public static Optional<Board> produceBoardFromMove(Board currentBoard, Move move) {
+        //TODO: Make a method that can produce a board given a move and a certain board on which the
+        // will be made.
+
+
+        //Placeholder
+        return Optional.empty();
+    }
+
+    public void addPiecesToBoard(List<PieceState> pieces) {
+        for(PieceState pieceState : pieces) {
+
+            if(pieceState.getPosition().checkInBounds()) {
+                int rowVal = pieceState.getPosition().getRow();
+                int colVal = pieceState.getPosition().getCol();
 
 //                pieceGrid.get(rowVal).set(colVal, Optional.of(piece));
-                grid[rowVal][colVal] = piece;
+                grid[rowVal][colVal] = pieceState.getPiece();
             }
         }
     }
@@ -99,6 +114,54 @@ public class Board {
 
     public boolean pieceExistsAtPosition(PositionVector positionVector) {
         return grid[positionVector.getRow()][positionVector.getCol()] != null;
+    }
+
+    /**
+     * Finds a piece in the list of pieceStates, and sets the position based on that piece state
+     * that was found.
+     * @param piece Piece that you want to change the position of
+     * @param position The position that you want the piece to assume
+     */
+    public void setPiecePosition(Piece piece, PositionVector position) {
+        Optional<PieceState> pieceState = findStateOfPiece(piece);
+
+        pieceState.ifPresent(state -> state.setPiecePosition(position));
+    }
+
+    /**
+     * Make the piece that is specified classify as captured. Essentially, this sets the position
+     * field of the piece that is captured to empty.
+     * @param piece The piece that is to be made as captured.
+     */
+    public void setPieceCaptured(Piece piece) {
+        Optional<PieceState> pieceState = findStateOfPiece(piece);
+
+        pieceState.ifPresent(PieceState::makePieceCaptured);
+    }
+
+    private Optional<PieceState> findStateOfPiece(Piece piece) {
+        return allPieceStates.stream()
+                .filter(state -> state.getPiece().equals(piece))
+                .findFirst();
+    }
+
+    void promotePieceAtPosition(PositionVector piecePosition) {
+        Optional<Piece> piece = getPieceAtPosition(piecePosition);
+
+        // Check if a checkers pawn exists on the board on the given position
+        if(piece.isPresent() && piece.get() instanceof CheckersPawn) {
+            //TODO: Find a way to promote the piece at the position and the piece in the piece list
+
+            // This piece is created because we need a new king piece on the board. This needs to be
+            // put into BOTH the checkers grid and the list of piece states.
+            Piece kingPiece = new CheckersKing(piece.get().team);
+
+            setPiecePosition(kingPiece, piecePosition);
+
+            // Find the state where the piece is held and make king go there
+            findStateOfPiece(piece.get())
+                    .ifPresent(pieceState -> pieceState.changePiece(kingPiece));
+        }
     }
 
     @Override
@@ -121,6 +184,8 @@ public class Board {
         }
 
         str.append("\n");
+
+        str.append(allPieceStates.toString() + "\n");
 
         return str.toString();
     }
