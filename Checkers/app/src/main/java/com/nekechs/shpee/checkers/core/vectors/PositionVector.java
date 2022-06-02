@@ -17,7 +17,7 @@ public class PositionVector extends BoardVector {
         super(row,col);
     }
 
-    PositionVector(BoardVector v) {
+    public PositionVector(BoardVector v) {
         super(v);
     }
 

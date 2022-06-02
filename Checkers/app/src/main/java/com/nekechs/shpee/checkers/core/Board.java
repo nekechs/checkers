@@ -1,7 +1,9 @@
 package com.nekechs.shpee.checkers.core;
 
 import com.nekechs.shpee.checkers.core.exceptions.OutOfBoardException;
+import com.nekechs.shpee.checkers.core.vectors.Movement;
 import com.nekechs.shpee.checkers.core.vectors.PositionVector;
+import com.nekechs.shpee.checkers.core.vectors.VectorFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 public class Board {
     final Piece[][] grid = new Piece[8][8];
@@ -72,21 +75,124 @@ public class Board {
     public Board(Board b) {
         this.game = b.game;
         this.moveNumber = b.moveNumber + 1;
-        this.allPieceStates = new LinkedList<>(b.allPieceStates);
+//        this.allPieceStates = new LinkedList<>(b.allPieceStates);
+        this.allPieceStates = b.allPieceStates.stream()
+                        .map(PieceState::new)
+                        .collect(Collectors.toList());
 
 //        addPiecesToBoard(game.white.pieceList);
 //        addPiecesToBoard(game.black.pieceList);
-        addPiecesToBoard(allPieceStates);
+        addPiecesToBoard(this.allPieceStates);
 
-        System.out.println("Duping board");
+//        System.out.println("Duping board");
     }
 
-    public static Optional<Board> produceBoardFromMove(Board currentBoard, Move move) {
+    public Optional<Board> produceBoardFromMove(Move move) {
         //TODO: Make a method that can produce a board given a move and a certain board on which the
         // will be made.
 
+        PositionVector startingPoint = move.getStartingPosition();
+        Optional<Piece> possiblePiece = getPieceAtPosition(startingPoint);
 
-        //Placeholder
+        Team whoseTurn = game.getWhoseTurn();
+
+        if(!possiblePiece.isPresent() || !possiblePiece.get().team.equals(whoseTurn)) {
+            // No piece is present at the square you start at; Illegal move!!!!
+            return Optional.empty();
+        }
+
+//        System.out.println("CURRENT TURN: " + whoseTurn.teamColor);
+
+        Piece piece = possiblePiece.get();
+
+        Board newBoard = new Board(this);
+
+        if(move instanceof NormalMove) {
+            NormalMove normalMove = (NormalMove) move;
+            if(!piece.isValidMoveDirection(normalMove.moveDirection) ) {
+                return Optional.empty();
+            }
+
+            PositionVector finalPosition = startingPoint.addDirection(normalMove.moveDirection, Movement.MOVEMENT_DISTANCE.SINGLE);
+            Optional<Piece> possibleDestination = newBoard.getPieceAtPosition(finalPosition);
+
+            if(possibleDestination.isPresent()) {
+                // This means that we are trying to make a normal move into a spot where a piece
+                // already exists, whether it's our own piece or it an enemy piece. That is illegal.
+                return Optional.empty();
+            }
+
+//            System.out.println("Direction: " + normalMove.moveDirection + "; Final position: " + finalPosition + "; Starting position: " + startingPoint);
+
+            // Swap the values!!
+//            piece.setPosition(finalPosition);
+            newBoard.setPiecePosition(piece, finalPosition);
+
+            newBoard.grid[finalPosition.getRow()][finalPosition.getCol()] = piece;
+            newBoard.grid[startingPoint.getRow()][startingPoint.getCol()] = null;
+
+            if(move.isPromotionAttempt(whoseTurn)) {
+                newBoard.promotePieceAtPosition(finalPosition);
+            }
+
+//            System.out.println(allPieceStates.equals(newBoard.allPieceStates));
+
+            return Optional.of(newBoard);
+        }
+
+        if(move instanceof CaptureMove) {
+            CaptureMove captureMove = (CaptureMove) move;
+
+            PositionVector currentDestination = startingPoint;
+            PositionVector previousDestination;
+
+//            System.out.println("Capture move size: " + captureMove.movementSequence.size());
+
+            for(VectorFactory.Direction direction : captureMove.movementSequence) {
+                if(!piece.isValidMoveDirection(direction)) {
+//                    System.out.println("bruh");
+                    return Optional.empty();
+                }
+
+                PositionVector captureSquare = currentDestination.addDirection(direction, Movement.MOVEMENT_DISTANCE.SINGLE);
+
+                previousDestination = currentDestination;
+                currentDestination = currentDestination.addDirection(direction, Movement.MOVEMENT_DISTANCE.DOUBLE);
+
+                Optional<Piece> possibleCapturedPiece = newBoard.getPieceAtPosition(captureSquare);
+                Optional<Piece> possibleDestinationPiece = newBoard.getPieceAtPosition(currentDestination);
+
+                System.out.println(whoseTurn.teamColor + " " + captureSquare);
+
+                if(possibleDestinationPiece.isPresent() ||
+                        !possibleCapturedPiece.isPresent() ||
+                        possibleCapturedPiece.get().team.equals(whoseTurn)) {
+                    // Either something exists where we want to go, something does not exist for us
+                    // to capture, or the piece to be captured is on our own team. This is not meant
+                    // to happen, and the move is illegal.
+//                    System.out.println("momentoooo");
+                    return Optional.empty();
+                }
+
+                newBoard.grid[currentDestination.getRow()][currentDestination.getCol()] = piece;
+                newBoard.grid[captureSquare.getRow()][captureSquare.getCol()] = null;
+                newBoard.grid[previousDestination.getRow()][previousDestination.getCol()] = null;
+                newBoard.setPiecePosition(piece, currentDestination);
+//                piece.setPosition(currentDestination);
+
+//                possibleCapturedPiece.get().setPosition(new PositionVector(-1,-1));
+                newBoard.setPieceCaptured(possibleCapturedPiece.get());
+//                System.out.println("HuhH???");
+            }
+
+            // Note: Horribly optimized. TODO: Make this more optimized.
+            if(move.isPromotionAttempt(whoseTurn)) {
+                newBoard.promotePieceAtPosition(move.getFinalSpot());
+            }
+
+            return Optional.of(newBoard);
+        }
+
         return Optional.empty();
     }
 
@@ -162,6 +268,10 @@ public class Board {
             findStateOfPiece(piece.get())
                     .ifPresent(pieceState -> pieceState.changePiece(kingPiece));
         }
+    }
+
+    public String getPieceCoordinates() {
+        return allPieceStates.toString();
     }
 
     @Override

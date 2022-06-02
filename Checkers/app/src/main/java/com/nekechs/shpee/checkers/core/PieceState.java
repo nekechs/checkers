@@ -32,6 +32,11 @@ public class PieceState {
         this.pieceDelegation = piece;
     }
 
+    public PieceState(PieceState p) {
+        this.pieceDelegation = p.pieceDelegation;
+        this.piecePosition = p.piecePosition.map(PositionVector::new);
+    }
+
     /**
      * Changes the piece that is stored inside of there
      * @param piece the new piece that is to be added

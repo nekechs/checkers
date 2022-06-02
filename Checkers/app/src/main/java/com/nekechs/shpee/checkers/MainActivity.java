@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 chessTextThingy.setText(game.toString());
+                game.printLatestPieceList();
 //                System.out.println(game);
             }
         });

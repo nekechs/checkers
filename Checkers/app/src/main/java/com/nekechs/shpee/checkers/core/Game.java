@@ -40,6 +40,7 @@ public class Game {
         }
     }
 
+    /*
     public GameState processMoveRequest(Move move) {
         PositionVector startingPoint = move.getStartingPosition();
         Optional<Piece> possiblePiece = boards.peek().getPieceAtPosition(startingPoint);
@@ -74,7 +75,11 @@ public class Game {
 
             // Swap the values!!
 //            piece.setPosition(finalPosition);
+
+            // This is highly problematic!!!!!!!!!! - This alters the piece list of the previous
+            // board!!
             newBoard.setPiecePosition(piece, finalPosition);
+
             newBoard.grid[finalPosition.getRow()][finalPosition.getCol()] = piece;
             newBoard.grid[startingPoint.getRow()][startingPoint.getCol()] = null;
             currentMoveNumber++;
@@ -82,6 +87,8 @@ public class Game {
             if(move.isPromotionAttempt(getWhoseTurn())) {
                 newBoard.promotePieceAtPosition(finalPosition);
             }
+
+            System.out.println(boards.peek().allPieceStates.equals(newBoard.allPieceStates));
 
             boards.push(newBoard);
             return GameState.NORMALMOVE;
@@ -147,6 +154,19 @@ public class Game {
 
         return GameState.ILLEGALMOVE;
     }
+     */
+
+    public GameState processMoveRequest(Move move) {
+        Optional<Board> newBoard = boards.peek().produceBoardFromMove(move);
+        if(newBoard.isPresent()) {
+            currentMoveNumber++;
+            boards.push(newBoard.get());
+
+            return GameState.NORMALMOVE;
+        } else {
+            return GameState.ILLEGALMOVE;
+        }
+    }
 
     public Team getWhoseTurn() /*throws NoTeamFoundException*/ {
         //TODO: Evaluate whether or not this (possibly commented) style of code with the exceptions is good design
@@ -178,6 +198,12 @@ public class Game {
     private void progressMove() {
         currentMoveNumber++;
 
+    }
+
+    public void printLatestPieceList() {
+//        System.out.println(boards.peek().getPieceCoordinates());
+        boards.stream()
+                .forEach(board -> System.out.println(board.getPieceCoordinates()));
     }
 
     public String toString() {
