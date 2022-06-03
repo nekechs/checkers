@@ -7,6 +7,7 @@ import com.nekechs.shpee.checkers.core.vectors.RelativeVector;
 import com.nekechs.shpee.checkers.core.vectors.RelativeVectorFactory;
 import com.nekechs.shpee.checkers.core.vectors.VectorFactory;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Optional;
 

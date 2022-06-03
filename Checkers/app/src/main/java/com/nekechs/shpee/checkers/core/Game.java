@@ -1,19 +1,16 @@
 package com.nekechs.shpee.checkers.core;
 
-import android.graphics.Paint;
-import android.graphics.PostProcessor;
-
 import com.nekechs.shpee.checkers.core.vectors.PositionVector;
 import com.nekechs.shpee.checkers.core.vectors.VectorFactory;
 
 import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
-import java.util.TreeSet;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Game {
     Stack<Board> boards;
@@ -50,7 +47,7 @@ public class Game {
     }
 
     public GameState processMoveRequest(Move move) {
-        List<CaptureMove> possibleCaptureMoves = testCaptureMoves();
+        List<Move> possibleCaptureMoves = testCaptureMoves();
         if(!(move instanceof CaptureMove) && !possibleCaptureMoves.isEmpty()) {
             return GameState.ILLEGALMOVE;
         }
@@ -91,31 +88,58 @@ public class Game {
 
     //TODO: Make sure this works
     // Status so far: Works
-    public List<CaptureMove> getCaptureMovesAtPosition(PositionVector piecePosition) {
+    public List<Move> getInitialCaptureMoves(PositionVector piecePosition) {
         CaptureMove[] moveList = {new CaptureMove(piecePosition, VectorFactory.Direction.NORTHEAST),
                                     new CaptureMove(piecePosition, VectorFactory.Direction.NORTHWEST),
                                     new CaptureMove(piecePosition, VectorFactory.Direction.SOUTHEAST),
                                     new CaptureMove(piecePosition, VectorFactory.Direction.SOUTHWEST)};
 
+        return testMoves(moveList);
+    }
+
+    public List<Move> getNormalMoves(PositionVector piecePosition) {
+        NormalMove[] moveList = {new NormalMove(piecePosition, VectorFactory.Direction.NORTHEAST),
+                new NormalMove(piecePosition, VectorFactory.Direction.NORTHWEST),
+                new NormalMove(piecePosition, VectorFactory.Direction.SOUTHEAST),
+                new NormalMove(piecePosition, VectorFactory.Direction.SOUTHWEST)};
+
+        return testMoves(moveList);
+    }
+
+    public List<Move> testMoves(Move[] moveList) {
         return Arrays.stream(moveList)
-                .filter(captureMove -> boards.peek().producePossibleBoard(captureMove).isPresent())
+                .filter(move -> boards.peek().producePossibleBoard(move).isPresent())
                 .collect(Collectors.toList());
     }
 
-    public void testBoardDuplication() {
-        Board board = new Board(boards.peek());
-        boards.push(board);
-    }
-
-    private void progressMove() {
-        currentMoveNumber++;
-
-    }
-
-    public List<CaptureMove> testCaptureMoves() {
+    /**
+     * Get the list of all single movement capture moves that are present in a given board position.
+     * Useful primarily for checking whether or not capture moves exist, so that all non-capture
+     * moves can be disabled.
+     * @return A list containing any number of CaptureMoves if they exist for a given board, or an empty list if none exist
+     */
+    public List<Move> testCaptureMoves() {
         return boards.peek().allPieceStates.stream()
-                .flatMap(pieceState -> getCaptureMovesAtPosition(pieceState.getPosition()).stream())
+                .flatMap(pieceState -> getInitialCaptureMoves(pieceState.getPosition()).stream())
                 .collect(Collectors.toList());
+    }
+
+    public Map<PositionVector, Move> getAllValidMovesAtPosition(PositionVector position) {
+        Map<PositionVector, Move> moveListMap = new HashMap<PositionVector, Move>();
+
+        if(testCaptureMoves().isEmpty()) {
+            // We are in normal move mode: We should only get normal moves.
+            moveListMap = getNormalMoves(position).stream()
+                    .collect(Collectors.toMap(Move::getFinalSpot, Function.identity()));
+        } else {
+            // We are in capture move mode; Only get capture moves.
+            //TODO: Find a way to get a list of all capture moves. Not just the prelim ones.
+            // WOrk on this. NOT FINISHED!!!!!!!!!
+
+
+        }
+
+        return moveListMap;
     }
 
     public void printLatestPieceList() {

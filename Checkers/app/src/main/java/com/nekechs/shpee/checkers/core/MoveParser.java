@@ -39,6 +39,15 @@ public class MoveParser {
         return positionVectorList;
     }
 
+    /**
+     * Method that converts a given checkers/chess coordinate (for example, a5, e8, or f2) into a
+     * PositionVector that corresponds to that same spot. This method also accounts for text being
+     * not correctly formatted or potentially out of bounds coordinates, and in that case, returns
+     * null.
+     * @param text The coordinate (in text) that is 'human readable'
+     * @return A position vector if the coordinate is valid, or null if it is not valid (e.g. having
+     * a9 or bb2 or asdf because those are not valid coordinates.
+     */
     protected static PositionVector textToPositionVector(String text) {
         text = text.toLowerCase();
         if(text.length() != 2) {
@@ -70,6 +79,7 @@ public class MoveParser {
 
         return new PositionVector(colVal, rowVal);
     }
+
     /**
      *  The generateMove methods below are methods that return a type of Move that satisfy the
      *  following requirements:
