@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
                 textInput.getText().clear();
 
                 chessTextThingy.setText(game.toString());
+
+                System.out.println(game.testCaptureMoves());
 //                System.out.println(game);
             }
         });

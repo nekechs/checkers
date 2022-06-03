@@ -74,7 +74,7 @@ public class Board {
 
     public Board(Board b) {
         this.game = b.game;
-        this.moveNumber = b.moveNumber + 1;
+        this.moveNumber = game.currentMoveNumber + 1;
 //        this.allPieceStates = new LinkedList<>(b.allPieceStates);
         this.allPieceStates = b.allPieceStates.stream()
                         .map(PieceState::new)
@@ -87,7 +87,7 @@ public class Board {
 //        System.out.println("Duping board");
     }
 
-    public Optional<Board> produceBoardFromMove(Move move) {
+    public Optional<Board> producePossibleBoard(Move move) {
         //TODO: Make a method that can produce a board given a move and a certain board on which the
         // will be made.
 
@@ -210,6 +210,10 @@ public class Board {
     }
 
     public Optional<Piece> getPieceAtPosition(PositionVector position) {
+        if(!position.checkInBounds()) {
+            return Optional.empty();
+        }
+
         int rowVal = position.getRow();
         int colVal = position.getCol();
 

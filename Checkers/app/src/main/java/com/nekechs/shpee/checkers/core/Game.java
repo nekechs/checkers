@@ -1,11 +1,20 @@
 package com.nekechs.shpee.checkers.core;
 
-import com.nekechs.shpee.checkers.core.vectors.Movement;
+import android.graphics.Paint;
+import android.graphics.PostProcessor;
+
 import com.nekechs.shpee.checkers.core.vectors.PositionVector;
 import com.nekechs.shpee.checkers.core.vectors.VectorFactory;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public class Game {
     Stack<Board> boards;
     int currentMoveNumber;
@@ -40,124 +49,13 @@ public class Game {
         }
     }
 
-    /*
     public GameState processMoveRequest(Move move) {
-        PositionVector startingPoint = move.getStartingPosition();
-        Optional<Piece> possiblePiece = boards.peek().getPieceAtPosition(startingPoint);
-
-        if(!possiblePiece.isPresent() || !possiblePiece.get().team.equals(getWhoseTurn())) {
-            // No piece is present at the square you start at; Illegal move!!!!
+        List<CaptureMove> possibleCaptureMoves = testCaptureMoves();
+        if(!(move instanceof CaptureMove) && !possibleCaptureMoves.isEmpty()) {
             return GameState.ILLEGALMOVE;
         }
 
-        System.out.println("CURRENT TURN: " + getWhoseTurn().teamColor);
-
-        Piece piece = possiblePiece.get();
-
-        if(move instanceof NormalMove) {
-//            System.out.println("this be normal move");
-            Board newBoard = new Board(boards.peek());
-            NormalMove normalMove = (NormalMove) move;
-            if(!piece.isValidMoveDirection(normalMove.moveDirection) ) {
-                return GameState.ILLEGALMOVE;
-            }
-
-            PositionVector finalPosition = startingPoint.addDirection(normalMove.moveDirection, Movement.MOVEMENT_DISTANCE.SINGLE);
-            Optional<Piece> possibleDestination = newBoard.getPieceAtPosition(finalPosition);
-
-            if(possibleDestination.isPresent()) {
-                // This means that we are trying to make a normal move into a spot where a piece
-                // already exists, whether it's our own piece or it an enemy piece. That is illegal.
-                return GameState.ILLEGALMOVE;
-            }
-
-            System.out.println("Direction: " + normalMove.moveDirection + "; Final position: " + finalPosition + "; Starting position: " + startingPoint);
-
-            // Swap the values!!
-//            piece.setPosition(finalPosition);
-
-            // This is highly problematic!!!!!!!!!! - This alters the piece list of the previous
-            // board!!
-            newBoard.setPiecePosition(piece, finalPosition);
-
-            newBoard.grid[finalPosition.getRow()][finalPosition.getCol()] = piece;
-            newBoard.grid[startingPoint.getRow()][startingPoint.getCol()] = null;
-            currentMoveNumber++;
-
-            if(move.isPromotionAttempt(getWhoseTurn())) {
-                newBoard.promotePieceAtPosition(finalPosition);
-            }
-
-            System.out.println(boards.peek().allPieceStates.equals(newBoard.allPieceStates));
-
-            boards.push(newBoard);
-            return GameState.NORMALMOVE;
-        }
-
-        if(move instanceof CaptureMove) {
-            Board board = new Board(boards.peek());
-            CaptureMove captureMove = (CaptureMove) move;
-
-            PositionVector currentDestination = startingPoint;
-            PositionVector previousDestination;
-
-//            System.out.println("Capture move size: " + captureMove.movementSequence.size());
-
-            for(VectorFactory.Direction direction : captureMove.movementSequence) {
-                if(!piece.isValidMoveDirection(direction)) {
-                    System.out.println("bruh");
-                    return GameState.ILLEGALMOVE;
-                }
-
-                PositionVector captureSquare = currentDestination.addDirection(direction, Movement.MOVEMENT_DISTANCE.SINGLE);
-
-                previousDestination = currentDestination;
-                currentDestination = currentDestination.addDirection(direction, Movement.MOVEMENT_DISTANCE.DOUBLE);
-
-                Optional<Piece> possibleCapturedPiece = board.getPieceAtPosition(captureSquare);
-                Optional<Piece> possibleDestinationPiece = board.getPieceAtPosition(currentDestination);
-
-                System.out.println(getWhoseTurn().teamColor + " " + captureSquare);
-
-                if(possibleDestinationPiece.isPresent() ||
-                        !possibleCapturedPiece.isPresent() ||
-                        possibleCapturedPiece.get().team.equals(getWhoseTurn())) {
-                    // Either something exists where we want to go, something does not exist for us
-                    // to capture, or the piece to be captured is on our own team. This is not meant
-                    // to happen, and the move is illegal.
-//                    System.out.println("momentoooo");
-                    return GameState.ILLEGALMOVE;
-                }
-
-                board.grid[currentDestination.getRow()][currentDestination.getCol()] = piece;
-                board.grid[captureSquare.getRow()][captureSquare.getCol()] = null;
-                board.grid[previousDestination.getRow()][previousDestination.getCol()] = null;
-                board.setPiecePosition(piece, currentDestination);
-//                piece.setPosition(currentDestination);
-
-                // This is an indicator that the piece is captured.
-                currentMoveNumber++;
-
-//                possibleCapturedPiece.get().setPosition(new PositionVector(-1,-1));
-                board.setPieceCaptured(possibleCapturedPiece.get());
-                System.out.println("HuhH???");
-            }
-
-            // Note: Horribly optimized. TODO: Make this more optimized.
-            if(move.isPromotionAttempt(getWhoseTurn())) {
-                board.promotePieceAtPosition(move.getFinalSpot());
-            }
-
-            boards.push(board);
-            return GameState.NORMALMOVE;
-        }
-
-        return GameState.ILLEGALMOVE;
-    }
-     */
-
-    public GameState processMoveRequest(Move move) {
-        Optional<Board> newBoard = boards.peek().produceBoardFromMove(move);
+        Optional<Board> newBoard = boards.peek().producePossibleBoard(move);
         if(newBoard.isPresent()) {
             currentMoveNumber++;
             boards.push(newBoard.get());
@@ -190,6 +88,20 @@ public class Game {
         return black;
     }
 
+
+    //TODO: Make sure this works
+    // Status so far: Works
+    public List<CaptureMove> getCaptureMovesAtPosition(PositionVector piecePosition) {
+        CaptureMove[] moveList = {new CaptureMove(piecePosition, VectorFactory.Direction.NORTHEAST),
+                                    new CaptureMove(piecePosition, VectorFactory.Direction.NORTHWEST),
+                                    new CaptureMove(piecePosition, VectorFactory.Direction.SOUTHEAST),
+                                    new CaptureMove(piecePosition, VectorFactory.Direction.SOUTHWEST)};
+
+        return Arrays.stream(moveList)
+                .filter(captureMove -> boards.peek().producePossibleBoard(captureMove).isPresent())
+                .collect(Collectors.toList());
+    }
+
     public void testBoardDuplication() {
         Board board = new Board(boards.peek());
         boards.push(board);
@@ -198,6 +110,12 @@ public class Game {
     private void progressMove() {
         currentMoveNumber++;
 
+    }
+
+    public List<CaptureMove> testCaptureMoves() {
+        return boards.peek().allPieceStates.stream()
+                .flatMap(pieceState -> getCaptureMovesAtPosition(pieceState.getPosition()).stream())
+                .collect(Collectors.toList());
     }
 
     public void printLatestPieceList() {

@@ -60,36 +60,6 @@ public class MoveParser {
             return null;
         }
 
-        // Naive Solution
-//        switch(rowChar) {
-//            case 'a':
-//                rowVal = 0;
-//                break;
-//            case 'b':
-//                rowVal = 1;
-//                break;
-//            case 'c':
-//                rowVal = 2;
-//                break;
-//            case 'd':
-//                rowVal = 3;
-//                break;
-//            case 'e':
-//                rowVal = 4;
-//                break;
-//            case 'f':
-//                rowVal = 5;
-//                break;
-//            case 'g':
-//                rowVal = 6;
-//                break;
-//            case 'h':
-//                rowVal = 7;
-//                break;
-//            default:
-//                return null;
-//        }
-
         int colEntry = (int) colChar - 48;
         if(colEntry > 8 || colEntry < 1) {
             return null;
