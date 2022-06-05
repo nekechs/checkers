@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.nekechs.shpee.checkers.core.Game;
 import com.nekechs.shpee.checkers.core.Move;
 import com.nekechs.shpee.checkers.core.MoveParser;
+import com.nekechs.shpee.checkers.views.CheckersView;
 
 import java.util.Optional;
 
@@ -31,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
         final Button undoButton = (Button) findViewById(R.id.undo_button);
 
         final EditText textInput = (EditText) findViewById(R.id.move_text_input);
+
+        final CheckersView checkersView = (CheckersView) findViewById(R.id.checkers_view);
 
         testMoveButton.setOnClickListener(new View.OnClickListener() {
             @Override

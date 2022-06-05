@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Widget.AppTheme.CheckersView" parent="">
+        <item name="darkSquareColor">@color/cyan_800</item>
+        <item name="lightSquareColor">@color/cyan_100</item>
+        <item name="highlightLightColor">@color/purple_200</item>
+        <item name="highlightDarkColor">@color/purple_500</item>
+    </style>
+</resources>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CheckersView">
+        <attr name="darkSquareColor" format="color"/>
+        <attr name="lightSquareColor" format="color"/>
+        <attr name="highlightLightColor" format="color"/>
+        <attr name="highlightDarkColor" format="color"/>
+    </declare-styleable>
+</resources>

@@ -96,8 +96,8 @@ public class Board {
 
         Team whoseTurn = game.getWhoseTurn();
 
-        if(!possiblePiece.isPresent() || !possiblePiece.get().team.equals(whoseTurn)) {
-            // No piece is present at the square you start at; Illegal move!!!!
+        if(!possiblePiece.isPresent() || !possiblePiece.get().team.equals(whoseTurn) || !move.isPlausible()) {
+            // No piece is present at the square you start at, or the move isn't plausible; Illegal move!!!!
             return Optional.empty();
         }
 
@@ -122,8 +122,6 @@ public class Board {
                 return Optional.empty();
             }
 
-//            System.out.println("Direction: " + normalMove.moveDirection + "; Final position: " + finalPosition + "; Starting position: " + startingPoint);
-
             // Swap the values!!
 //            piece.setPosition(finalPosition);
             newBoard.setPiecePosition(piece, finalPosition);
@@ -135,8 +133,6 @@ public class Board {
                 newBoard.promotePieceAtPosition(finalPosition);
             }
 
-//            System.out.println(allPieceStates.equals(newBoard.allPieceStates));
-
             return Optional.of(newBoard);
         }
 
@@ -146,11 +142,8 @@ public class Board {
             PositionVector currentDestination = startingPoint;
             PositionVector previousDestination;
 
-//            System.out.println("Capture move size: " + captureMove.movementSequence.size());
-
             for(VectorFactory.Direction direction : captureMove.movementSequence) {
                 if(!piece.isValidMoveDirection(direction)) {
-//                    System.out.println("bruh");
                     return Optional.empty();
                 }
 
@@ -162,15 +155,12 @@ public class Board {
                 Optional<Piece> possibleCapturedPiece = newBoard.getPieceAtPosition(captureSquare);
                 Optional<Piece> possibleDestinationPiece = newBoard.getPieceAtPosition(currentDestination);
 
-                System.out.println(whoseTurn.teamColor + " " + captureSquare);
-
                 if(possibleDestinationPiece.isPresent() ||
                         !possibleCapturedPiece.isPresent() ||
                         possibleCapturedPiece.get().team.equals(whoseTurn)) {
                     // Either something exists where we want to go, something does not exist for us
                     // to capture, or the piece to be captured is on our own team. This is not meant
                     // to happen, and the move is illegal.
-//                    System.out.println("momentoooo");
                     return Optional.empty();
                 }
 
@@ -182,7 +172,6 @@ public class Board {
 
 //                possibleCapturedPiece.get().setPosition(new PositionVector(-1,-1));
                 newBoard.setPieceCaptured(possibleCapturedPiece.get());
-//                System.out.println("HuhH???");
             }
 
             // Note: Horribly optimized. TODO: Make this more optimized.
@@ -299,7 +288,7 @@ public class Board {
 
         str.append("\n");
 
-        str.append(allPieceStates.toString() + "\n");
+        str.append(allPieceStates.toString()).append("\n");
 
         return str.toString();
     }

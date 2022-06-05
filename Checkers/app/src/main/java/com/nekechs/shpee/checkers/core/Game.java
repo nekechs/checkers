@@ -1,8 +1,11 @@
 package com.nekechs.shpee.checkers.core;
 
+import android.security.identity.NoAuthenticationKeyAvailableException;
+
 import com.nekechs.shpee.checkers.core.vectors.PositionVector;
 import com.nekechs.shpee.checkers.core.vectors.VectorFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -135,7 +138,7 @@ public class Game {
             // We are in capture move mode; Only get capture moves.
             //TODO: Find a way to get a list of all capture moves. Not just the prelim ones.
             // WOrk on this. NOT FINISHED!!!!!!!!!
-
+            
 
         }
 
@@ -146,6 +149,14 @@ public class Game {
 //        System.out.println(boards.peek().getPieceCoordinates());
         boards.stream()
                 .forEach(board -> System.out.println(board.getPieceCoordinates()));
+    }
+
+    /**
+     * Gets a list of
+     * @return
+     */
+    public List<PieceState> getLatestPieceList() {
+        return new ArrayList<>(boards.peek().allPieceStates);
     }
 
     public String toString() {
