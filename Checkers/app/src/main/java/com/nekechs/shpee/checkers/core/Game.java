@@ -31,6 +31,8 @@ public class Game {
     final Team white;
     final Team black;
 
+    private GameListener listener;
+
     public Game() {
         white = new Team('w', Board.WHITE_RIGHT_CORNER, 1);
         black = new Team('b', Board.BLACK_RIGHT_CORNER, 0);
@@ -39,7 +41,32 @@ public class Game {
         boards.push(new Board(this));
 
         currentMoveNumber = 0;
+    }
 
+    public void setListener(GameListener listener) {
+        this.listener = listener;
+    }
+
+    public interface GameListener {
+        default public void onIllegalMove() {
+
+        }
+
+        default public void onCheckmate() {
+
+        }
+
+        default public void onStalemate() {
+
+        }
+
+        default public void onNormalMove() {
+
+        }
+
+        default public void onCaptureMove() {
+
+        }
     }
 
     public void undoMove() {
@@ -60,6 +87,26 @@ public class Game {
             currentMoveNumber++;
             boards.push(newBoard.get());
 
+            List<PositionVector> remainingPiecePositions = boards.peek().allPieceStates.stream()
+                    .filter(state -> !state.isCaptured() && state.getPiece().team.equals(getWhoseTurn()))
+                    .map(PieceState::getPosition)
+                    .collect(Collectors.toList());
+
+            if(remainingPiecePositions.isEmpty()) {
+                // There are no remaining moves for the team; win by checkmate!
+                listener.onCheckmate();
+                return GameState.CHECKMATE;
+            } else if(remainingPiecePositions.stream()
+                    .flatMap(positionVector -> getAllValidMovesAtPosition(positionVector).keySet().stream())
+                    .count() == 0){
+                // There are no moves!
+                listener.onStalemate();
+                return GameState.STALEMATE;
+            }
+
+            // Properly report whether or not the move was a capture move or a normal move
+            if(move instanceof NormalMove) listener.onNormalMove();
+            if(move instanceof CaptureMove) listener.onCaptureMove();
             return GameState.NORMALMOVE;
         } else {
             return GameState.ILLEGALMOVE;

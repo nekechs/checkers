@@ -24,6 +24,27 @@ public class CheckersViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Game game = new Game();
+        game.setListener(new Game.GameListener() {
+            @Override
+            public void onIllegalMove() {
+                System.out.println("Illegal move detected");
+            }
+
+            @Override
+            public void onCheckmate() {
+                System.out.println("Checkmate (all pieces captured) detected");
+            }
+
+            @Override
+            public void onStalemate() {
+                System.out.println("Stalemate detected");
+            }
+
+            @Override
+            public void onNormalMove() {
+                System.out.println("Normal move detected");
+            }
+        });
 
         CheckersView checkersView = (CheckersView) findViewById(R.id.checkers_view);
         checkersView.setGame(game);

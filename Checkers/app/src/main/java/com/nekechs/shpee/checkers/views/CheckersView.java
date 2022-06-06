@@ -33,6 +33,11 @@ public class CheckersView extends View {
     private final int moveHighlightColor;// = R.color.purple_200;
     private final int pieceHighlightColor;
 
+    private Paint darkSquarePaint;
+    private Paint lightSquarePaint;
+    private Paint moveHighlightPaint;
+    private Paint pieceHighlightPaint;
+
     private float squareSideLength;
     private float boardSideLength;
     public int width;
@@ -77,6 +82,11 @@ public class CheckersView extends View {
             a.recycle();
         }
 
+        (darkSquarePaint = new Paint()).setColor(darkSquareColor);
+        (lightSquarePaint = new Paint()).setColor(lightSquareColor);
+        (moveHighlightPaint = new Paint()).setColor(moveHighlightColor);
+        (pieceHighlightPaint = new Paint()).setColor(pieceHighlightColor);
+
         bmpPieceMap = new HashMap<>();
         positionToMoveMap = new HashMap<>();
 
@@ -106,6 +116,7 @@ public class CheckersView extends View {
                 if(move != null) {
                     checkersGame.processMoveRequest(move);
                 }
+                positionToMoveMap.clear();
             }
         });
 //        pieceSelectionPosition.ifPresent(position -> positionToMoveMap = checkersGame.getAllValidMovesAtPosition(position));
@@ -156,11 +167,10 @@ public class CheckersView extends View {
     }
 
     private void drawBoard(Canvas canvas) {
-        Paint myPaint = new Paint();
-
+        Paint myPaint;
         for(int i = 0; i < 8; i++) {
             for(int j = 0; j < 8; j++) {
-                myPaint.setColor( (i + j) % 2 == 0 ? lightSquareColor : darkSquareColor);
+                myPaint = (i + j) % 2 == 0 ? lightSquarePaint : darkSquarePaint;
                 drawSquareAtPosition(canvas, myPaint, j, i);
                 // canvas.drawRect(xOrigin + i * 50, yOrigin + j * 50, xOrigin + (i + 1) * 50, yOrigin + (j + 1) * 50, myPaint);
             }
@@ -168,21 +178,15 @@ public class CheckersView extends View {
     }
 
     private void drawHighlighedSquare(Canvas canvas, PositionVector position) {
-        Paint highlightPaint = new Paint();
-        highlightPaint.setColor(pieceHighlightColor);
-        drawSquareAtPosition(canvas, highlightPaint, position.getRow(), position.getCol());
+        drawSquareAtPosition(canvas, pieceHighlightPaint, position.getRow(), position.getCol());
     }
 
     private void drawSuggestedMoves(Canvas canvas) {
-        Paint highlightPaint = new Paint();
-        highlightPaint.setColor(moveHighlightColor);
-
         positionToMoveMap.keySet()
                 .forEach(position -> drawSquareAtPosition(canvas,
-                        highlightPaint,
+                        moveHighlightPaint,
                         position.getRow(),
                         position.getCol()));
-
     }
 
     private void drawPieces(Canvas canvas) {
@@ -217,11 +221,11 @@ public class CheckersView extends View {
         Bitmap bmp = Bitmap.createBitmap((int)boardSideLength, (int)boardSideLength, conf);
         Canvas canvas = new Canvas(bmp);
 
-        Paint myPaint = new Paint();
+        Paint myPaint;
 
         for(int i = 0; i < 8; i++) {
             for(int j = 0; j < 8; j++) {
-                myPaint.setColor( (i + j) % 2 == 0 ? lightSquareColor : darkSquareColor);
+                myPaint = (i + j) % 2 == 0 ? lightSquarePaint : darkSquarePaint;
                 canvas.drawRect(xOrigin + i * squareSideLength, yOrigin + j * squareSideLength,
                         xOrigin + (i + 1) * squareSideLength, yOrigin + (j + 1) * squareSideLength,
                         myPaint);
