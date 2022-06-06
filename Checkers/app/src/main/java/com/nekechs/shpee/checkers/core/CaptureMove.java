@@ -9,6 +9,7 @@ import com.nekechs.shpee.checkers.core.vectors.VectorFactory;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +26,12 @@ public class CaptureMove
     public CaptureMove(PositionVector startingPiece, VectorFactory.Direction... captureDirections) {
         this.startingPosition = startingPiece;
         this.movementSequence = Arrays.asList(captureDirections);
+    }
+
+    public CaptureMove(CaptureMove move, VectorFactory.Direction newCaptureDirection) {
+        this.startingPosition = new PositionVector(move.startingPosition);
+        this.movementSequence = new LinkedList<>(move.movementSequence);
+        movementSequence.add(newCaptureDirection);
     }
 
     @Override

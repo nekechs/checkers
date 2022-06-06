@@ -1,16 +1,16 @@
 package com.nekechs.shpee.checkers.core;
 
-import android.security.identity.NoAuthenticationKeyAvailableException;
-
 import com.nekechs.shpee.checkers.core.vectors.PositionVector;
 import com.nekechs.shpee.checkers.core.vectors.VectorFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.Stack;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -138,8 +138,24 @@ public class Game {
             // We are in capture move mode; Only get capture moves.
             //TODO: Find a way to get a list of all capture moves. Not just the prelim ones.
             // WOrk on this. NOT FINISHED!!!!!!!!!
-            
+            Queue<CaptureMove> moveQueue = new LinkedList<>();
+            moveQueue.add(new CaptureMove(position, VectorFactory.Direction.NORTHEAST));
+            moveQueue.add(new CaptureMove(position, VectorFactory.Direction.NORTHWEST));
+            moveQueue.add(new CaptureMove(position, VectorFactory.Direction.SOUTHEAST));
+            moveQueue.add(new CaptureMove(position, VectorFactory.Direction.SOUTHWEST));
 
+            while(!moveQueue.isEmpty()) {
+                CaptureMove currentMove = moveQueue.remove();
+
+                if(boards.peek().producePossibleBoard(currentMove).isPresent()) {
+                    moveListMap.put(currentMove.getFinalSpot(), currentMove);
+
+                    moveQueue.add(new CaptureMove(currentMove, VectorFactory.Direction.NORTHEAST));
+                    moveQueue.add(new CaptureMove(currentMove, VectorFactory.Direction.NORTHWEST));
+                    moveQueue.add(new CaptureMove(currentMove, VectorFactory.Direction.SOUTHEAST));
+                    moveQueue.add(new CaptureMove(currentMove, VectorFactory.Direction.SOUTHWEST));
+                }
+            }
         }
 
         return moveListMap;
@@ -157,6 +173,11 @@ public class Game {
      */
     public List<PieceState> getLatestPieceList() {
         return new ArrayList<>(boards.peek().allPieceStates);
+    }
+
+    public boolean pieceAtPositionCanMove(PositionVector piecePosition) {
+        Optional<Piece> piece = boards.peek().getPieceAtPosition(piecePosition);
+        return piece.isPresent() && piece.get().team.equals(getWhoseTurn());
     }
 
     public String toString() {

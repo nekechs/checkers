@@ -7,7 +7,7 @@ import java.util.List;
 
 public abstract class Piece {
 //    private PositionVector position;
-    final Team team;
+    public final Team team;
 
     public Piece(Team team) {
         this.team = team;

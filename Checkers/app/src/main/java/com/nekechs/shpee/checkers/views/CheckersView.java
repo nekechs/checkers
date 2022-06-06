@@ -20,10 +20,12 @@ import com.nekechs.shpee.checkers.core.Move;
 import com.nekechs.shpee.checkers.core.PieceState;
 import com.nekechs.shpee.checkers.core.vectors.PositionVector;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class CheckersView extends View {
     private final int darkSquareColor;// = R.color.cyan_800;
@@ -43,7 +45,7 @@ public class CheckersView extends View {
     private final Map<String, Bitmap> bmpPieceMap;// = new HashMap<>();
     private static Bitmap boardBMP;
 
-    private Optional<PositionVector> selectionPosition;
+    private Optional<PositionVector> pieceSelectionPosition;
     private Map<PositionVector, Move> positionToMoveMap;
 
     private static final int[] iconSetIDs = {
@@ -82,7 +84,7 @@ public class CheckersView extends View {
             bmpPieceMap.put(pieceStrings[i], generateBitmapFromSVG(500, iconSetIDs[i]));
         }
 
-        selectionPosition = Optional.empty();
+        pieceSelectionPosition = Optional.empty();
     }
 
     @Override
@@ -90,9 +92,23 @@ public class CheckersView extends View {
         float x = event.getX();
         float y = event.getY();
 
-        selectionPosition = getSquareFromPos(x, y);
-        selectionPosition.ifPresent(position -> positionToMoveMap = checkersGame.getAllValidMovesAtPosition(position));
+//        pieceSelectionPosition = checkersGame.pieceAtPositionCanMove(getSquareFromPos(x, y));
+        getSquareFromPos(x, y).ifPresent(position -> {
+            pieceSelectionPosition = checkersGame.pieceAtPositionCanMove(position) ? Optional.of(position) : Optional.empty();
 
+            if(pieceSelectionPosition.isPresent()) {
+                positionToMoveMap = checkersGame.getAllValidMovesAtPosition(position);
+            } else {
+                Move move = positionToMoveMap.get(position);
+//                System.out.println(positionToMoveMap);
+//                positionToMoveMap.keySet()
+//                        .forEach(mapPosition -> System.out.println("Result of comparing " + position + " and " + mapPosition + ": " + mapPosition.equals(position)));
+                if(move != null) {
+                    checkersGame.processMoveRequest(move);
+                }
+            }
+        });
+//        pieceSelectionPosition.ifPresent(position -> positionToMoveMap = checkersGame.getAllValidMovesAtPosition(position));
         invalidate();
 
         return true;
@@ -105,7 +121,7 @@ public class CheckersView extends View {
         calculateDimensions();
         drawBoard(canvas);
 
-        selectionPosition.ifPresent(positionVector -> drawHighlighedSquare(canvas, positionVector));
+        pieceSelectionPosition.ifPresent(positionVector -> drawHighlighedSquare(canvas, positionVector));
 
         if(checkersGame != null) {
             drawSuggestedMoves(canvas);
