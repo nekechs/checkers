@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,26 +24,37 @@ public class CheckersViewActivity extends AppCompatActivity {
         super.onCreate(savedInstance);
         setContentView(R.layout.activity_main);
 
+        TextView statusText = (TextView) findViewById(R.id.gameStatusText);
+
         Game game = new Game();
         game.setListener(new Game.GameListener() {
             @Override
             public void onIllegalMove() {
-                System.out.println("Illegal move detected");
+                statusText.setText("Illegal move detected");
             }
 
             @Override
             public void onCheckmate() {
-                System.out.println("Checkmate (all pieces captured) detected");
+                statusText.setText(R.string.checkmate_detect);
+                System.out.println(Game.produceMoveStringList(game.moveList));
+            }
+
+            @Override
+            public void onCaptureMove() {
+                statusText.setText(R.string.capture_detect);
+                System.out.println(Game.produceMoveStringList(game.moveList));
             }
 
             @Override
             public void onStalemate() {
-                System.out.println("Stalemate detected");
+                statusText.setText(R.string.stalemate_detect);
+                System.out.println(Game.produceMoveStringList(game.moveList));
             }
 
             @Override
             public void onNormalMove() {
-                System.out.println("Normal move detected");
+                statusText.setText(R.string.normal_detect);
+                System.out.println(Game.produceMoveStringList(game.moveList));
             }
         });
 
@@ -51,38 +63,34 @@ public class CheckersViewActivity extends AppCompatActivity {
 
         checkersView.invalidate();
 
+        Button button = (Button) findViewById(R.id.undoButton);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                game.undoMove();
+                checkersView.invalidate();
+            }
+        });
+
         // Now, need to set up the Text
-        TextInputEditText moveInput = (TextInputEditText) findViewById(R.id.move_input_field);
-
-        moveInput.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int code, KeyEvent keyEvent) {
-                if(keyEvent.getAction() == KeyEvent.ACTION_DOWN && code == KeyEvent.KEYCODE_ENTER) {
-                    String input = moveInput.getText().toString();
-                    Optional<Move> moveOptional = MoveParser.parseMove(MoveParser.parseTextMoveList(input));
-
-                    moveOptional.ifPresent(game::processMoveRequest);
-                    moveInput.getText().clear();
-
-                    checkersView.invalidate();
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        /*
-        moveInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                boolean handled = false;
-                if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    handled = true;
-                }
-                return handled;
-
-            }
-        });
-        */
+//        TextInputEditText moveInput = (TextInputEditText) findViewById(R.id.move_input_field);
+//
+//        moveInput.setOnKeyListener(new View.OnKeyListener() {
+//            @Override
+//            public boolean onKey(View view, int code, KeyEvent keyEvent) {
+//                if(keyEvent.getAction() == KeyEvent.ACTION_DOWN && code == KeyEvent.KEYCODE_ENTER) {
+//                    String input = moveInput.getText().toString();
+//                    Optional<Move> moveOptional = MoveParser.parseMove(MoveParser.parseTextMoveList(input));
+//
+//                    moveOptional.ifPresent(game::processMoveRequest);
+//                    moveInput.getText().clear();
+//
+//                    checkersView.invalidate();
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
     }
 }

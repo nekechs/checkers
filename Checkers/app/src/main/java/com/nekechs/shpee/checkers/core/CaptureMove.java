@@ -42,13 +42,15 @@ public class CaptureMove
 
             @Override
             public boolean hasNext() {
-                return i < movementSequence.size();
+                return i < movementSequence.size() + 1;
             }
 
             @Override
             public PositionVector next() {
                 PositionVector prevVector = currentVector;
-                currentVector = currentVector.addDirection(movementSequence.get(i), Movement.MOVEMENT_DISTANCE.DOUBLE);
+                if (i < movementSequence.size()){
+                    currentVector = currentVector.addDirection(movementSequence.get(i), Movement.MOVEMENT_DISTANCE.DOUBLE);
+                }
                 i++;
                 return prevVector;
             }

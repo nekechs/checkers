@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Checkers</string>
     <string name="move_input_label">Move input</string>
+    <string name="checkmate_detect">Checkmate!</string>
+    <string name="capture_detect">Wow, a piece has been captured?</string>
+    <string name="stalemate_detect">Uh oh, win by stalemate.</string>
+    <string name="normal_detect">Plain old move, nothing to see here</string>
 </resources>

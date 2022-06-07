@@ -126,4 +126,10 @@ public class PositionVector extends BoardVector {
                 super.col < getMaxCol() &&
                 super.col >= 0;
     }
+
+    public String getStandardPositionNotation() {
+        char fileChar = (char) (col + 97);
+
+        return Character.toString(fileChar) + (8 - row);
+    }
 }

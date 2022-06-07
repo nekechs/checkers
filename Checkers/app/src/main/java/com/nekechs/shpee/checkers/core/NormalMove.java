@@ -34,7 +34,7 @@ public class NormalMove extends Move{
             @Override
             public PositionVector next() {
                 PositionVector prevVector = currentVector;
-                currentVector = currentVector.addDirection(moveDirection, Movement.MOVEMENT_DISTANCE.DOUBLE);
+                currentVector = currentVector.addDirection(moveDirection, Movement.MOVEMENT_DISTANCE.SINGLE);
                 i++;
                 return prevVector;
             }

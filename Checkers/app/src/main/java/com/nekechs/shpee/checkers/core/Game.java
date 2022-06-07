@@ -3,6 +3,7 @@ package com.nekechs.shpee.checkers.core;
 import com.nekechs.shpee.checkers.core.vectors.PositionVector;
 import com.nekechs.shpee.checkers.core.vectors.VectorFactory;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,8 +16,10 @@ import java.util.Stack;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class Game {
+public class Game implements Serializable {
     Stack<Board> boards;
+    public List<Move> moveList;
+
     int currentMoveNumber;
 
     enum GameState {
@@ -39,6 +42,7 @@ public class Game {
 
         boards = new Stack<Board>();
         boards.push(new Board(this));
+        moveList = new ArrayList<>();
 
         currentMoveNumber = 0;
     }
@@ -73,6 +77,7 @@ public class Game {
         if(boards.size() > 1) {
             boards.pop();
             currentMoveNumber--;
+            moveList.remove(moveList.size() - 1);
         }
     }
 
@@ -84,8 +89,10 @@ public class Game {
 
         Optional<Board> newBoard = boards.peek().producePossibleBoard(move);
         if(newBoard.isPresent()) {
+            // An actual move is present... Wow!
             currentMoveNumber++;
             boards.push(newBoard.get());
+            moveList.add(move);
 
             List<PositionVector> remainingPiecePositions = boards.peek().allPieceStates.stream()
                     .filter(state -> !state.isCaptured() && state.getPiece().team.equals(getWhoseTurn()))
@@ -113,21 +120,27 @@ public class Game {
         }
     }
 
-    public Team getWhoseTurn() /*throws NoTeamFoundException*/ {
-        //TODO: Evaluate whether or not this (possibly commented) style of code with the exceptions is good design
-//        Team[] teams = new Team[2];
-//        teams[0] = white;
-//        teams[1] = black;
-//
-//        for(Team team : teams) {
-//            if(team.startingMoveNumber == inGameTurn % 2) {
-//                return team;
-//            }
-//        }
-//
-//        // Very bad. Do not get to this point, or else something has gone horribly wrong.
-//        throw new NoTeamFoundException("Critical issue: Could not find any team existing that goes for this turn.")
+    /**
+     * Method that returns a list of strings that represent the notation of an entire game. This is
+     * specifically made so that a ListView can interface with this and have a presentable list of
+     * moves to show.
+     * @param moveList List of moves that is to be converted to the list of strings
+     * @return A list of strings that displays the entire list of moves throughout the whole game.
+     */
+    public static List<String> produceMoveStringList(List<Move> moveList) {
+        List<String> moveStringList = new ArrayList<>();
 
+        for(int i = 0; i < moveList.size(); i += 2) {
+            String str = moveList.get(i).getPositionNotation() +
+                    ((i + 1) < moveList.size() ? "; " + moveList.get(i + 1).getPositionNotation() : "");
+
+            moveStringList.add(str);
+        }
+
+        return moveStringList;
+    }
+
+    public Team getWhoseTurn() /*throws NoTeamFoundException*/ {
         if(white.startingMoveNumber == currentMoveNumber % 2) {
             return white;
         }
@@ -210,8 +223,7 @@ public class Game {
 
     public void printLatestPieceList() {
 //        System.out.println(boards.peek().getPieceCoordinates());
-        boards.stream()
-                .forEach(board -> System.out.println(board.getPieceCoordinates()));
+        boards.forEach(board -> System.out.println(board.getPieceCoordinates()));
     }
 
     /**
