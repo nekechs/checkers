@@ -8,8 +8,8 @@
 
     <com.nekechs.shpee.checkers.views.CheckersView
         android:id="@+id/checkers_view"
-        android:layout_width="401dp"
-        android:layout_height="400dp"
+        android:layout_width="343dp"
+        android:layout_height="314dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,8 +50,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.925"
         app:layout_constraintStart_toEndOf="@+id/undoButton"
-        app:layout_constraintTop_toBottomOf="@+id/checkers_view"
-        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintTop_toBottomOf="@+id/moveListView"
         app:srcCompat="@android:drawable/ic_menu_manage" />
+
+    <ListView
+        android:id="@+id/moveListView"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/checkers_view"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="0dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

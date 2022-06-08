@@ -5,7 +5,8 @@
       <map>
         <entry key="app/src/main/res/drawable/black_king.xml" value="0.2995" />
         <entry key="app/src/main/res/drawable/ic_black_king.xml" value="0.2995" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/game_move.xml" value="0.1322463768115942" />
         <entry key="app/src/main/res/layout/old_activity_main.xml" value="0.18229166666666666" />
       </map>
     </option>

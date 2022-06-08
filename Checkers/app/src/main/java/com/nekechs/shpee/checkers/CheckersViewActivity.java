@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,9 +17,19 @@ import com.nekechs.shpee.checkers.core.Move;
 import com.nekechs.shpee.checkers.core.MoveParser;
 import com.nekechs.shpee.checkers.views.CheckersView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class CheckersViewActivity extends AppCompatActivity {
+
+    private static <T> void updateList(List<T> src, List<T> dst, ArrayAdapter<T> adapter) {
+        dst.clear();
+        dst.addAll(
+                new ArrayList<>(src)
+        );
+        adapter.notifyDataSetChanged();
+    }
 
     @Override
     public void onCreate(Bundle savedInstance) {
@@ -25,6 +37,12 @@ public class CheckersViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         TextView statusText = (TextView) findViewById(R.id.gameStatusText);
+        ListView moveList = (ListView) findViewById(R.id.moveListView);
+
+        List<String> moveStringList = new ArrayList<>();
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.game_move, moveStringList);
+        moveList.setAdapter(adapter);
 
         Game game = new Game();
         game.setListener(new Game.GameListener() {
@@ -36,25 +54,25 @@ public class CheckersViewActivity extends AppCompatActivity {
             @Override
             public void onCheckmate() {
                 statusText.setText(R.string.checkmate_detect);
-                System.out.println(Game.produceMoveStringList(game.moveList));
+                updateList(Game.produceMoveStringList(game.moveList), moveStringList, adapter);
             }
 
             @Override
             public void onCaptureMove() {
                 statusText.setText(R.string.capture_detect);
-                System.out.println(Game.produceMoveStringList(game.moveList));
+                updateList(Game.produceMoveStringList(game.moveList), moveStringList, adapter);
             }
 
             @Override
             public void onStalemate() {
                 statusText.setText(R.string.stalemate_detect);
-                System.out.println(Game.produceMoveStringList(game.moveList));
+                updateList(Game.produceMoveStringList(game.moveList), moveStringList, adapter);
             }
 
             @Override
             public void onNormalMove() {
                 statusText.setText(R.string.normal_detect);
-                System.out.println(Game.produceMoveStringList(game.moveList));
+                updateList(Game.produceMoveStringList(game.moveList), moveStringList, adapter);
             }
         });
 
@@ -69,6 +87,7 @@ public class CheckersViewActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 game.undoMove();
+                updateList(Game.produceMoveStringList(game.moveList), moveStringList, adapter);
                 checkersView.invalidate();
             }
         });
