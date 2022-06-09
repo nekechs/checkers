@@ -81,6 +81,13 @@ public class Game implements Serializable {
         }
     }
 
+    public void resetGame() {
+        boards = new Stack<>();
+        currentMoveNumber = 0;
+        boards.push(new Board(this));
+        moveList = new ArrayList<>();
+    }
+
     public GameState processMoveRequest(Move move) {
         List<Move> possibleCaptureMoves = testCaptureMoves();
         if(!(move instanceof CaptureMove) && !possibleCaptureMoves.isEmpty()) {

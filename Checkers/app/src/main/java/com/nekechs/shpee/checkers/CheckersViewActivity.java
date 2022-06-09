@@ -81,12 +81,23 @@ public class CheckersViewActivity extends AppCompatActivity {
 
         checkersView.invalidate();
 
-        Button button = (Button) findViewById(R.id.undoButton);
+        Button undoButton = (Button) findViewById(R.id.undoButton);
 
-        button.setOnClickListener(new View.OnClickListener() {
+        undoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 game.undoMove();
+                updateList(Game.produceMoveStringList(game.moveList), moveStringList, adapter);
+                checkersView.invalidate();
+            }
+        });
+
+        Button resetButton = (Button) findViewById(R.id.reset_button);
+
+        resetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                game.resetGame();
                 updateList(Game.produceMoveStringList(game.moveList), moveStringList, adapter);
                 checkersView.invalidate();
             }

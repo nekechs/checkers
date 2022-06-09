@@ -8,8 +8,8 @@
 
     <com.nekechs.shpee.checkers.views.CheckersView
         android:id="@+id/checkers_view"
-        android:layout_width="343dp"
-        android:layout_height="314dp"
+        android:layout_width="328dp"
+        android:layout_height="328dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,10 +20,11 @@
         android:id="@+id/undoButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:text="Undo Move"
-        app:layout_constraintBottom_toBottomOf="@+id/gameActionsFloatingButton"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.145"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="627dp" />
 
     <TextView
         android:id="@+id/gameStatusText"
@@ -40,26 +41,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/gameActionsFloatingButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.925"
-        app:layout_constraintStart_toEndOf="@+id/undoButton"
-        app:layout_constraintTop_toBottomOf="@+id/moveListView"
-        app:srcCompat="@android:drawable/ic_menu_manage" />
-
     <ListView
         android:id="@+id/moveListView"
-        android:layout_width="wrap_content"
-        android:layout_height="200dp"
+        android:layout_width="328dp"
+        android:layout_height="211dp"
+        android:elevation="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/checkers_view"
-        app:layout_constraintVertical_bias="0.0"
-        tools:layout_editor_absoluteX="0dp" />
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/reset_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reset"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.74"
+        app:layout_constraintStart_toEndOf="@+id/undoButton"
+        tools:layout_editor_absoluteY="627dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
